@@ -30,7 +30,7 @@ export default function Map({isGm}) {
                 </nav>
             )}
 
-            <img src={"/upload/map.png?loadTimestamp=" + imageLoadTimestamp} className="background-image"/>
+            <img src={"/api/file/map/png?loadTimestamp=" + imageLoadTimestamp} className="background-image"/>
         </div>
     );
 }

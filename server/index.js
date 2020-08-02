@@ -13,6 +13,12 @@ module.exports = function run() {
     nextApp.prepare().then(() => {
         const server = createServer((req, res) => {
             req.io = io;
+            res.redirect = function (to, status = 301) {
+                res.writeHead(302, {
+                    'Location': to
+                });
+                res.end();
+            };
 
             return nextHandler(req, res);
         }).listen(port, (err) => {
