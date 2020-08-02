@@ -13,8 +13,8 @@ export default function IndexPage() {
 
             <div className="d-flex">
                 <CreatureSideBar isGm={false}/>
-                <Map isGm={false}/>
-                <SideBar></SideBar>
+                <Map className="flex-fill" isGm={false}/>
+                <SideBar/>
             </div>
         </div>
     );

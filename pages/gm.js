@@ -11,10 +11,10 @@ export default function GameMasterPage() {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <div className="d-flex">
+            <div className="d-flex justify-content-center">
                 <CreatureSideBar isGm={true}/>
-                <Map isGm={true}/>
-                <SideBar></SideBar>
+                <Map className="flex-fill" isGm={true}/>
+                <SideBar isGm={true}/>
             </div>
         </div>
     );

@@ -31,10 +31,19 @@ export default function CreatureForm() {
     }
 
     return (
-        <form onSubmit={onSubmit} className="creature-form form">
-            <input type="text" className="form-control" value={data.name} onChange={onInputChange.bind(null, "name")} placeholder="New Creature"/>
-            <input type="number" className="form-control" onChange={onInputChange.bind(null, "health")} value={data.health}/>
-            <button className="btn btn-success">Save</button>
+        <form onSubmit={onSubmit} className="creature-form form p-2 panel mt-2">
+            <h5>
+                New Creature
+            </h5>
+            <div className="form-group">
+                <input type="text" className="form-control" value={data.name} onChange={onInputChange.bind(null, "name")} placeholder="Creature name"/>
+            </div>
+            <div className="form-group">
+                <input type="number" className="form-control" onChange={onInputChange.bind(null, "health")} value={data.health}/>
+            </div>
+            <div className="form-group d-flex">
+                <button className="btn btn-success flex-fill">Save</button>
+            </div>
         </form>
     );
 }

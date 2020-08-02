@@ -1,3 +1,9 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'Map';
 @import "Creature";
+
+
+.sidebar {
+    max-width: 300px;
+    min-width: 300px;
+}

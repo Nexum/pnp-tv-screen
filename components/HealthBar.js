@@ -5,7 +5,7 @@ export default function HealthBar({className, current, health, label}) {
 
     return (
         <div className={(className || "") + " health-bar"}>
-            <ProgressBar now={percentage} label={label + ` ${percentage}%`}/>
+            <ProgressBar className="" now={percentage} label={label + ` ${percentage}%`}/>
         </div>
     );
 

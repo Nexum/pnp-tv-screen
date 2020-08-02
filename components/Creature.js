@@ -1,4 +1,6 @@
 import HealthBar from "./HealthBar";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMinus, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons";
 
 export default function Creature({isGm, _id, name, health, currentHealth}) {
     async function deleteCreature() {
@@ -20,13 +22,19 @@ export default function Creature({isGm, _id, name, health, currentHealth}) {
     return (
         <div className="creature d-flex flex-fill">
             {isGm && (
-                <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, -1)}>-</button>
+                <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, -1)}>
+                    <FontAwesomeIcon icon={faMinus}/>
+                </button>
             )}
             <HealthBar health={health} current={currentHealth} className="flex-fill" label={name}/>
             {isGm && (
                 <>
-                    <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, 1)}>+</button>
-                    <button className="btn btn-danger btn-sm" onClick={deleteCreature}>X</button>
+                    <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, 1)}>
+                        <FontAwesomeIcon icon={faPlus}/>
+                    </button>
+                    <button className="btn btn-danger btn-sm" onClick={deleteCreature}>
+                        <FontAwesomeIcon icon={faTimes}/>
+                    </button>
                 </>
             )}
         </div>

@@ -3,7 +3,7 @@ import Creature from "./Creature";
 import CreatureForm from "./CreatureForm";
 import useSocket from "../hooks/useSocket";
 
-export default function CreatureSideBar({isGm}) {
+export default function CreatureSideBar({isGm, className}) {
     const [creatures, setCreatures] = useState([]);
 
     async function getData() {
@@ -23,7 +23,7 @@ export default function CreatureSideBar({isGm}) {
     });
 
     return (
-        <div className="sidebar">
+        <div className={className + " sidebar creature-sidebar"}>
             {creatures.map((creature, i) => {
                 return (
                     <Creature {...creature} key={i} isGm={isGm}/>

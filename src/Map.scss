@@ -10,7 +10,10 @@
     }
 
     .background-image {
-        max-width: 100vh;
-        height: 100vh;
+        img {
+            max-width: 100vh;
+            height: 100vh;
+        }
     }
+
 }

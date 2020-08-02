@@ -3,7 +3,7 @@ import {Stage, Layer, Image} from 'react-konva';
 import useSocket from "../hooks/useSocket";
 
 export default function Map({className, isGm}) {
-    const [imageLoadTimestamp, setImageLoad] = useState(Date.now());
+    const [imageLoadTimestamp, setImageLoad] = useState();
 
     useSocket("file.map.changed", () => {
         setImageLoad(Date.now());
@@ -19,7 +19,7 @@ export default function Map({className, isGm}) {
     }
 
     return (
-        <div className={(className || "") + " map"}>
+        <div className={(className || "") + " map d-flex align-content-center justify-content-center"}>
             {isGm && (
                 <nav className="navbar navbar-dark bg-dark">
                     <ul className="navbar-nav ">
@@ -30,7 +30,9 @@ export default function Map({className, isGm}) {
                 </nav>
             )}
 
-            <img src={"/api/file/map/png?loadTimestamp=" + imageLoadTimestamp} className="background-image"/>
+            <div className="background-image">
+                <img src={"/api/file/map/png?loadTimestamp=" + imageLoadTimestamp}/>
+            </div>
         </div>
     );
 }
