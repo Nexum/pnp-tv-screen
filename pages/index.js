@@ -1,15 +1,21 @@
 import Head from 'next/head';
 import Map from '../components/Map';
+import SideBar from "../components/SideBar";
+import CreatureSideBar from "../components/CreatureSideBar";
 
-export default function ScreenPage() {
+export default function IndexPage() {
     return (
-        <div className="container-fluid" style={{height: "100vh"}}>
+        <div style={{height: "100vh"}}>
             <Head>
                 <title>Adventure</title>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <Map isGm={false}/>
+            <div className="d-flex">
+                <CreatureSideBar isGm={false}/>
+                <Map isGm={false}/>
+                <SideBar></SideBar>
+            </div>
         </div>
     );
 }

@@ -1,0 +1,13 @@
+.creature {
+
+    padding: 10px 10px 0 10px;
+
+    .health-bar {
+        min-width: 150px;
+
+        .progress-bar {
+            background-color: #681717;
+        }
+    }
+
+}
