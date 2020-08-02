@@ -1,7 +1,5 @@
 import Head from 'next/head';
-import Map from '../components/Map';
-import SideBar from "../components/SideBar";
-import CreatureSideBar from "../components/CreatureSideBar";
+import Screen from "../components/Screen";
 
 export default function GameMasterPage() {
     return (
@@ -11,11 +9,7 @@ export default function GameMasterPage() {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <div className="d-flex justify-content-center">
-                <CreatureSideBar isGm={true}/>
-                <Map className="flex-fill" isGm={true}/>
-                <SideBar isGm={true}/>
-            </div>
+            <Screen isGm={true}/>
         </div>
     );
 }

@@ -1,7 +1,5 @@
 import Head from 'next/head';
-import Map from '../components/Map';
-import SideBar from "../components/SideBar";
-import CreatureSideBar from "../components/CreatureSideBar";
+import Screen from "../components/Screen";
 
 export default function IndexPage() {
     return (
@@ -11,11 +9,7 @@ export default function IndexPage() {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <div className="d-flex">
-                <CreatureSideBar isGm={false}/>
-                <Map className="flex-fill" isGm={false}/>
-                <SideBar/>
-            </div>
+            <Screen isGm={false} />
         </div>
     );
 }
