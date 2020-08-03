@@ -15,7 +15,7 @@ export default function CreatureLayer({isGm, factor, mapName}) {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [mapName]);
 
     useSocket("creatures.changed", () => {
         getData();
