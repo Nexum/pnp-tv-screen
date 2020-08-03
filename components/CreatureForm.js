@@ -1,11 +1,14 @@
-import {useEffect, useState} from "react";
-
-let lastId = 0;
+import {useState} from "react";
+import ControlPanelFormContainer from "./ControlPanelFormContainer";
 
 export default function CreatureForm() {
     const initialData = {
         _id: "new",
         health: 10,
+        pos: {
+            x: 0,
+            y: 0,
+        },
         name: "",
     };
     const [data, setData] = useState(initialData);
@@ -31,19 +34,21 @@ export default function CreatureForm() {
     }
 
     return (
-        <form onSubmit={onSubmit} className="creature-form form p-2 panel mt-2">
-            <h5>
-                New Creature
-            </h5>
-            <div className="form-group">
-                <input type="text" className="form-control" value={data.name} onChange={onInputChange.bind(null, "name")} placeholder="Creature name"/>
-            </div>
-            <div className="form-group">
-                <input type="number" className="form-control" onChange={onInputChange.bind(null, "health")} value={data.health}/>
-            </div>
-            <div className="form-group d-flex">
-                <button className="btn btn-success flex-fill">Save</button>
-            </div>
-        </form>
+        <ControlPanelFormContainer>
+            <form onSubmit={onSubmit} className="creature-form form p-2 panel mt-2">
+                <h5>
+                    New Creature
+                </h5>
+                <div className="form-group">
+                    <input type="text" className="form-control" value={data.name} onChange={onInputChange.bind(null, "name")} placeholder="Creature name"/>
+                </div>
+                <div className="form-group">
+                    <input type="number" className="form-control" onChange={onInputChange.bind(null, "health")} value={data.health}/>
+                </div>
+                <div className="form-group d-flex">
+                    <button className="btn btn-success flex-fill">Save</button>
+                </div>
+            </form>
+        </ControlPanelFormContainer>
     );
 }

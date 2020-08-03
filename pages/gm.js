@@ -3,7 +3,7 @@ import Screen from "../components/Screen";
 
 export default function GameMasterPage() {
     return (
-        <div style={{height: "100vh"}}>
+        <div>
             <Head>
                 <title>Game Master</title>
                 <link rel="icon" href="/favicon.ico"/>

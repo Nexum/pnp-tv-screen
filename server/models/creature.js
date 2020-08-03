@@ -5,10 +5,20 @@ const schema = new Schema({
     name: String,
     health: Number,
     currentHealth: Number,
+    pos: {
+        x: {
+            type: Number,
+            default: 0,
+        },
+        y: {
+            type: Number,
+            default: 0,
+        },
+    },
 });
 
 schema.pre("save", function () {
-    if(this.health < 1) {
+    if (this.health < 1) {
         this.health = 1;
     }
 

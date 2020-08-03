@@ -1,7 +1,7 @@
 .map {
     position: relative;
     width: auto;
-    height: 100vh;
+    height: 100%;
 
     .navbar {
         position: absolute;
@@ -11,8 +11,8 @@
 
     .background-image {
         img {
-            max-width: 100vh;
-            height: 100vh;
+            max-width: 100%;
+            height: 100%;
         }
     }
 

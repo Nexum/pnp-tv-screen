@@ -1,8 +1,9 @@
 import HealthBar from "./HealthBar";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMinus, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {useDrag} from "react-dnd";
 
-export default function Creature({isGm, _id, name, health, currentHealth}) {
+export default function Creature({isGm, _id, name, pos, health, currentHealth, factor}) {
     async function deleteCreature() {
         await fetch(`/api/creature/${_id}/delete`, {
             method: "DELETE",
@@ -19,8 +20,31 @@ export default function Creature({isGm, _id, name, health, currentHealth}) {
         });
     }
 
+    const [{isDragging}, drag] = useDrag({
+        item: {
+            _id,
+            pos: pos || {
+                x: 0,
+                y: 0,
+            },
+            type: "creature",
+        },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+
+    if (isDragging) {
+        return <div ref={drag}/>;
+    }
+
     return (
-        <div className="creature d-flex flex-fill">
+        <div ref={drag} className="creature d-flex flex-fill" style={{
+            top: pos.y + "%",
+            left: pos.x + "%",
+            width: Math.round(250 * factor) + "px",
+            height: Math.round(31 * factor) + "px",
+        }}>
             {isGm && (
                 <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, -1)}>
                     <FontAwesomeIcon icon={faMinus}/>

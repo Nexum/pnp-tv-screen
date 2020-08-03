@@ -3,7 +3,7 @@ import Screen from "../components/Screen";
 
 export default function IndexPage() {
     return (
-        <div style={{height: "100vh"}}>
+        <div>
             <Head>
                 <title>Adventure</title>
                 <link rel="icon" href="/favicon.ico"/>
