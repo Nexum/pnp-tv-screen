@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import ControlPanelFormContainer from "./ControlPanelFormContainer";
-import {ButtonGroup, Button} from "react-bootstrap";
+import {Dropdown, DropdownButton, Button} from "react-bootstrap";
 import NewMapForm from "./NewMapForm";
 
 export default function MapForm({onClose, mapName}) {
@@ -44,11 +44,11 @@ export default function MapForm({onClose, mapName}) {
     return (
         <ControlPanelFormContainer onClose={onClose}>
             <div className="p-2">
-                <ButtonGroup>
+                <DropdownButton title="Select Map">
                     {maps.map((v, i) => {
-                        return <Button key={i} active={v._id === mapName} onClick={setMap.bind(null, v._id)}>{v._id}</Button>;
+                        return <Dropdown.Item key={i} active={v._id === mapName} onClick={setMap.bind(null, v._id)}>{v._id}</Dropdown.Item>;
                     })}
-                </ButtonGroup>
+                </DropdownButton>
             </div>
             <div className="p-2">
                 <h4>Change {mapName}</h4>
