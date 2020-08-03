@@ -2,8 +2,9 @@ import {useEffect, useState} from "react";
 import Creature from "./Creature";
 import CreatureForm from "./CreatureForm";
 import useSocket from "../hooks/useSocket";
+import SideBar from "./SideBar";
 
-export default function CreatureSideBar({isGm, className}) {
+export default function CreatureSideBar({isGm, className, width}) {
     const [creatures, setCreatures] = useState([]);
 
     async function getData() {
@@ -23,13 +24,13 @@ export default function CreatureSideBar({isGm, className}) {
     });
 
     return (
-        <div className={className + " sidebar creature-sidebar"}>
+        <SideBar className={className + " creature-sidebar"} width={width}>
             {creatures.map((creature, i) => {
                 return (
                     <Creature {...creature} key={i} isGm={isGm}/>
                 );
             })}
             {isGm && <CreatureForm/>}
-        </div>
+        </SideBar>
     );
 }

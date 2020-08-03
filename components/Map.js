@@ -1,9 +1,11 @@
-import {useCallback, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {Stage, Layer, Image} from 'react-konva';
 import useSocket from "../hooks/useSocket";
 
-export default function Map({className, isGm}) {
+export default function Map({className, isGm, onLoad}) {
     const [imageLoadTimestamp, setImageLoad] = useState();
+    const mapRef = useRef();
+    const containerRef = useRef();
 
     useSocket("file.map.changed", () => {
         setImageLoad(Date.now());
@@ -18,8 +20,14 @@ export default function Map({className, isGm}) {
         });
     }
 
+    function handleMapLoad(e) {
+        if (onLoad) {
+            onLoad(mapRef.current.clientWidth, containerRef.current.clientWidth);
+        }
+    }
+
     return (
-        <div className={(className || "") + " map d-flex align-content-center justify-content-center"}>
+        <div className={(className || "") + " map d-flex align-content-center justify-content-center"} ref={containerRef}>
             {isGm && (
                 <nav className="navbar navbar-dark bg-dark">
                     <ul className="navbar-nav ">
@@ -31,7 +39,7 @@ export default function Map({className, isGm}) {
             )}
 
             <div className="background-image">
-                <img src={"/api/file/map/png?loadTimestamp=" + imageLoadTimestamp}/>
+                <img ref={mapRef} onLoad={handleMapLoad} src={"/api/file/map/png?loadTimestamp=" + imageLoadTimestamp}/>
             </div>
         </div>
     );
