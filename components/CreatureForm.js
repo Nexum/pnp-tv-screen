@@ -1,10 +1,11 @@
 import {useState} from "react";
 import ControlPanelFormContainer from "./ControlPanelFormContainer";
 
-export default function CreatureForm({onClose}) {
+export default function CreatureForm({onClose, mapName}) {
     const initialData = {
         _id: "new",
         health: 10,
+        map: mapName,
         pos: {
             x: 0,
             y: 0,

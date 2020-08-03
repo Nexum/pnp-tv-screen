@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons";
 import {DropdownButton, Dropdown} from "react-bootstrap";
 
-export default function ControlPanel(isGm) {
+export default function ControlPanel({mapName}) {
     const [activePanel, setActivePanel] = useState([]);
 
     function toggleActive(panel) {
@@ -27,12 +27,12 @@ export default function ControlPanel(isGm) {
                     <Dropdown.Item active={activePanel.includes("creature")} eventKey="1"
                                    onClick={toggleActive.bind(null, "creature")}>Creatures</Dropdown.Item>
                     <Dropdown.Item active={activePanel.includes("map")} eventKey="2"
-                                   onClick={toggleActive.bind(null, "map")}>Map File</Dropdown.Item>
+                                   onClick={toggleActive.bind(null, "map")}>Maps</Dropdown.Item>
                     <Dropdown.Item eventKey="1" onClick={setActivePanel.bind(null, [])}>Close All</Dropdown.Item>
                 </DropdownButton>
             </div>
-            {activePanel.includes("creature") && <CreatureForm onClose={toggleActive.bind(null, "creature")}/>}
-            {activePanel.includes("map") && <MapForm onClose={toggleActive.bind(null, "map")}/>}
+            {activePanel.includes("creature") && <CreatureForm mapName={mapName} onClose={toggleActive.bind(null, "creature")}/>}
+            {activePanel.includes("map") && <MapForm mapName={mapName} onClose={toggleActive.bind(null, "map")}/>}
         </>
     );
 }

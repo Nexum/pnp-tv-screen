@@ -5,6 +5,10 @@ const schema = new Schema({
     name: String,
     health: Number,
     currentHealth: Number,
+    map: {
+        type: String,
+        ref: "map",
+    },
     pos: {
         x: {
             type: Number,
