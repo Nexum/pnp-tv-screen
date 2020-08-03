@@ -10,7 +10,7 @@ import useSocket from "../hooks/useSocket";
 export default function Screen({isGm}) {
     const layer = useRef();
     const [factor, setFactor] = useState(1);
-    const [mapName, setMapName] = useState("default-map");
+    const [mapName, setMapName] = useState(null);
     const [mapFow, setMapFow] = useState(null);
     const [layerWidth, setLayerWidth] = useState(null);
 
@@ -30,6 +30,18 @@ export default function Screen({isGm}) {
 
     }, [layerWidth]);
 
+    function resetFow() {
+        saveFogOfWar(null);
+    }
+
+    async function saveFogOfWar(data) {
+        await fetch(`/api/map/${mapName}/fow`, {
+            method: "POST",
+            body: JSON.stringify({
+                data,
+            }),
+        });
+    }
 
     async function getActiveMap() {
         const data = await fetch("/api/map/active", {
@@ -60,19 +72,19 @@ export default function Screen({isGm}) {
         getActiveMap();
     });
 
+    if (!mapName) {
+        return null;
+    }
+
     return (
-        <div className="">
-            <div className="screen" ref={layer}>
-                <div className="screen-content">
-                    <DndContainer className="d-flex justify-content-center" factor={factor}>
-                        <CreatureLayer isGm={isGm} factor={factor} mapName={mapName}/>
-                        <SideBar isGm={isGm}/>
-                        <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow}/>
-                        <SideBar isGm={isGm}/>
-                    </DndContainer>
+        <>
+            <DndContainer factor={factor}>
+                <CreatureLayer isGm={isGm} factor={factor} mapName={mapName}/>
+                <div className="screen d-flex justify-content-center" ref={layer}>
+                    <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow} resetFow={resetFow} saveFogOfWar={saveFogOfWar}/>
                 </div>
-            </div>
-            {isGm && <ControlPanel mapName={mapName}/>}
-        </div>
+            </DndContainer>
+            {isGm && <ControlPanel mapName={mapName} resetFow={resetFow}/>}
+        </>
     );
 }

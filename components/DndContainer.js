@@ -41,7 +41,7 @@ export default function DndContainer({className, children, factor}) {
     });
 
     return (
-        <div ref={drop} className={"dnd-container " + className}>
+        <div ref={drop} className={"dnd-container " + (className || "")}>
             {children}
         </div>
     );

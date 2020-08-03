@@ -1,54 +1,74 @@
 import {Stage, Layer, Rect, Image} from "react-konva";
 import Konva from "konva";
+import {ButtonGroup, Button, Form} from "react-bootstrap";
 import {useEffect, useRef, useState} from "react";
-import useSocket from "../hooks/useSocket";
+import {SketchPicker} from 'react-color';
 
-export default function FogOfWar({data, width, height, isGm, onSave}) {
+let painting = false;
+let fogColor = "#757575";
+
+export default function FogOfWar({data, width, height, isGm, onSave, resetFow}) {
     const stage = useRef();
     const layer = useRef();
-    const [mode, setMode] = useState("erazor");
+    const [mode, setMode] = useState("Erase");
+    const [color, setColor] = useState("#757575");
+    const [size, setSize] = useState(80);
+    const [sizeActive, setSizeActive] = useState(false);
+    const [colorPickerActive, setColorPickerActive] = useState(false);
     let lastLine;
 
     useEffect(() => {
-        if (stage.current && data) {
-            console.log("FogOfWar.js:14 / ", data);
+        if (stage.current) {
             layer.current.destroyChildren();
 
-            const imageObj = document.createElement("img");
-            imageObj.src = data;
+            let newImage = null;
 
-            const imported = new Konva.Image({
-                x: 0,
-                y: 0,
-                image: imageObj,
-                width: width,
-                height: height,
-            });
+            if (data) {
+                const imageObj = document.createElement("img");
+                imageObj.src = data;
+                imageObj.onload = function () {
+                    newImage = new Konva.Image({
+                        image: imageObj,
+                        width: width,
+                        height: height,
+                    });
 
+                    if (!isGm) {
+                        newImage.cache();
+                        newImage.filters([Konva.Filters.Blur]);
+                        newImage.blurRadius(100);
+                    }
 
-            /*
-            imported.cache();
-            imported.filters([Konva.Filters.Blur]);
-            imported.blurRadius(100);
-             */
-            layer.current.add(imported);
-            layer.current.batchDraw();
+                    layer.current.add(newImage);
+                    layer.current.batchDraw();
+                };
+            } else {
+                newImage = new Konva.Rect({
+                    fill: fogColor,
+                    width: width,
+                    height: height,
+                });
+
+                layer.current.add(newImage);
+                layer.current.batchDraw();
+            }
         }
-    }, [data]);
+    }, [data, width, height]);
 
     function onMouseDown(e) {
         if (!isGm) {
             return;
         }
 
+        painting = true;
         let pos = stage.current.getPointerPosition();
 
         lastLine = new Konva.Line({
-            stroke: '#FFFFFF',
-            strokeWidth: 100,
+            stroke: color,
+            strokeWidth: size,
             lineJoin: "round",
             lineCap: "round",
-            globalCompositeOperation: mode === "brush" ? 'source-over' : "destination-out",
+            globalCompositeOperation: mode === "Paint" ? 'source-over' : "destination-out",
             points: [pos.x, pos.y],
         });
 
@@ -56,15 +76,17 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
     }
 
     function onMouseUp(e) {
-        if (!isGm) {
+        if (!isGm || !painting) {
             return;
         }
-        onSave(stage.current.toDataURL());
+
+        onSave(layer.current.toDataURL());
         lastLine = null;
+        painting = false;
     }
 
     function onMouseMove(e) {
-        if (!lastLine || !isGm) {
+        if (!lastLine || !isGm || !painting) {
             return;
         }
 
@@ -73,6 +95,26 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
 
         lastLine.points(newPoints);
         layer.current.batchDraw();
+    }
+
+    function toggleMode() {
+        setMode(mode === "Erase" ? "Paint" : "Erase");
+        if (mode !== "Paint") {
+            setColorPickerActive(false);
+            setColor(fogColor);
+        }
+    }
+
+    function toggleColorPicker() {
+        setColorPickerActive(!colorPickerActive);
+    }
+
+    function colorSelected({hex}) {
+        setColor(hex);
+    }
+
+    function sizeChanged(e) {
+        setSize(e.currentTarget.value);
     }
 
     return (
@@ -84,11 +126,20 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
                        onMouseUp={onMouseUp}
                        onMouseMove={onMouseMove}
                        className={"fog-of-war"}>
-                    <Layer ref={layer} filters={[Konva.Filters.Blur]} blurRadius={30}>
-                        {!data && <Image width={width} height={height} fill={"#757575"}></Image>}
+                    <Layer ref={layer}>
                     </Layer>
                 </Stage>
             }
+            {isGm && (
+                <>
+                    <ButtonGroup className="modeToggle">
+                        <Button onClick={toggleMode} className="btn btn-dark">Mode: {mode}</Button>
+                        <Form.Control type={"range"} onChange={sizeChanged} min={5} max={160} value={size} className="size-select"/>
+                        {mode === "Paint" && <Button onClick={toggleColorPicker} className="btn btn-dark">Color</Button>}
+                    </ButtonGroup>
+                    {colorPickerActive && <SketchPicker color={color} onChange={colorSelected} className="color-picker"/>}
+                </>
+            )}
         </>
     );
 }
