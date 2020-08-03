@@ -19,7 +19,7 @@ export default function Map({className, mapName, fow, isGm}) {
         setTimeout(() => {
             setFowEnabled(true);
         });
-    }, [mapName]);
+    }, [mapName, imageWidth, imageHeight]);
 
     function handleMapLoad(e) {
         containerRef.current.style.width = "auto";

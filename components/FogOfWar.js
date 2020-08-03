@@ -11,6 +11,7 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
 
     useEffect(() => {
         if (stage.current && data) {
+            console.log("FogOfWar.js:14 / ", data);
             layer.current.destroyChildren();
 
             const imageObj = document.createElement("img");
@@ -24,6 +25,12 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
                 height: height,
             });
 
+
+            /*
+            imported.cache();
+            imported.filters([Konva.Filters.Blur]);
+            imported.blurRadius(100);
+             */
             layer.current.add(imported);
             layer.current.batchDraw();
         }
@@ -73,11 +80,11 @@ export default function FogOfWar({data, width, height, isGm, onSave}) {
             {
                 <Stage style={{opacity: isGm ? 0.8 : 1}} ref={stage} width={width} height={height}
                        onMouseDown={onMouseDown}
-                       onMouseLeave={onMouseUp}g
+                       onMouseLeave={onMouseUp} g
                        onMouseUp={onMouseUp}
                        onMouseMove={onMouseMove}
                        className={"fog-of-war"}>
-                    <Layer ref={layer}>
+                    <Layer ref={layer} filters={[Konva.Filters.Blur]} blurRadius={30}>
                         {!data && <Image width={width} height={height} fill={"#757575"}></Image>}
                     </Layer>
                 </Stage>
