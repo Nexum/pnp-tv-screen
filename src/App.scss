@@ -2,6 +2,9 @@
 @import 'Map';
 @import "Creature";
 
+body {
+    background: url("/img/wood.jpg");
+}
 
 .sidebar {
     min-width: 100px;
