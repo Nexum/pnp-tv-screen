@@ -24,7 +24,10 @@ export default function CreatureForm({onClose, mapName}) {
     async function handeSubmit() {
         await fetch(`/api/creature/${data._id}/save`, {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                ...data,
+                map: mapName,
+            }),
         });
     }
 
