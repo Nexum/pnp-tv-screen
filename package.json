@@ -16,7 +16,7 @@
         "express": "^4.17.1",
         "file-type": "^14.7.0",
         "formidable": "^1.2.2",
-        "konva": "^7.0.4",
+        "konva": "7.0.4",
         "mongoose": "^5.9.27",
         "next": "9.3.5",
         "react": "16.13.1",

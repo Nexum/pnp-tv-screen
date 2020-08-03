@@ -5,8 +5,11 @@ const schema = new Schema({
     _id: String,
     active: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
+    fow: {
+        type: String,
+    },
 });
 
 model("map", schema);

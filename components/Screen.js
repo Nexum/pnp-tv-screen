@@ -11,6 +11,7 @@ export default function Screen({isGm}) {
     const layer = useRef();
     const [factor, setFactor] = useState(1);
     const [mapName, setMapName] = useState("default-map");
+    const [mapFow, setMapFow] = useState(null);
     const [layerWidth, setLayerWidth] = useState(null);
 
     useEffect(() => {
@@ -40,6 +41,7 @@ export default function Screen({isGm}) {
 
             if (map) {
                 setMapName(map._id);
+                setMapFow(map.fow);
             }
         } catch (e) {
 
@@ -54,6 +56,10 @@ export default function Screen({isGm}) {
         getActiveMap();
     });
 
+    useSocket(`map.${mapName}.changed`, () => {
+        getActiveMap();
+    });
+
     return (
         <div className="">
             <div className="screen" ref={layer}>
@@ -61,7 +67,7 @@ export default function Screen({isGm}) {
                     <DndContainer className="d-flex justify-content-center" factor={factor}>
                         <CreatureLayer isGm={isGm} factor={factor} mapName={mapName}/>
                         <SideBar isGm={isGm}/>
-                        <Map isGm={isGm} factor={factor} mapName={mapName}/>
+                        <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow}/>
                         <SideBar isGm={isGm}/>
                     </DndContainer>
                 </div>
