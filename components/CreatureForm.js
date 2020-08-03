@@ -1,7 +1,7 @@
 import {useState} from "react";
 import ControlPanelFormContainer from "./ControlPanelFormContainer";
 
-export default function CreatureForm() {
+export default function CreatureForm({onClose}) {
     const initialData = {
         _id: "new",
         health: 10,
@@ -34,7 +34,7 @@ export default function CreatureForm() {
     }
 
     return (
-        <ControlPanelFormContainer>
+        <ControlPanelFormContainer onClose={onClose}>
             <form onSubmit={onSubmit} className="creature-form form p-2 panel mt-2">
                 <h5>
                     New Creature

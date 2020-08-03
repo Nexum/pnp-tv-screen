@@ -3,7 +3,7 @@ import {Stage, Layer, Image} from 'react-konva';
 import useSocket from "../hooks/useSocket";
 import ControlPanelFormContainer from "./ControlPanelFormContainer";
 
-export default function MapForm({}) {
+export default function MapForm({onClose}) {
 
     function onFileSelected(e) {
         const data = new FormData();
@@ -15,8 +15,8 @@ export default function MapForm({}) {
     }
 
     return (
-        <ControlPanelFormContainer>
-            <div className="">
+        <ControlPanelFormContainer onClose={onClose}>
+            <div className="p-2">
                 <h4>Change Map File</h4>
                 <input type="file" onChange={onFileSelected.bind(this)}/>
             </div>

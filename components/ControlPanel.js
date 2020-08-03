@@ -31,8 +31,8 @@ export default function ControlPanel(isGm) {
                     <Dropdown.Item eventKey="1" onClick={setActivePanel.bind(null, [])}>Close All</Dropdown.Item>
                 </DropdownButton>
             </div>
-            {activePanel.includes("creature") && <CreatureForm/>}
-            {activePanel.includes("map") && <MapForm/>}
+            {activePanel.includes("creature") && <CreatureForm onClose={toggleActive.bind(null, "creature")}/>}
+            {activePanel.includes("map") && <MapForm onClose={toggleActive.bind(null, "map")}/>}
         </>
     );
 }
