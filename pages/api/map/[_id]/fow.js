@@ -18,6 +18,7 @@ export default async (req, res) => {
         $set: {
             _id: _id,
             fow: data.data,
+            marker: data.marker,
         },
     }, {
         upsert: true,

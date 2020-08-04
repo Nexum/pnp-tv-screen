@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import FogOfWar from "./FogOfWar";
 
-export default function Map({className, mapName, fow, isGm, resetFow, saveFogOfWar}) {
+export default function Map({className, mapName, marker, fow, isGm, resetFow, saveFogOfWar}) {
     const [imageLoadTimestamp, setImageLoad] = useState();
     const [imageWidth, setImageWidth] = useState();
     const [imageHeight, setImageHeight] = useState();
@@ -21,7 +21,7 @@ export default function Map({className, mapName, fow, isGm, resetFow, saveFogOfW
 
     return (
         <div className={(className || "") + " map"} ref={containerRef}>
-            <FogOfWar data={fow} resetFow={resetFow} width={imageWidth} height={imageHeight} isGm={isGm} onSave={saveFogOfWar}/>
+            <FogOfWar data={fow} marker={marker} resetFow={resetFow} width={imageWidth} height={imageHeight} isGm={isGm} onSave={saveFogOfWar}/>
             <img ref={mapRef} onLoad={handleMapLoad} src={`/api/file/${mapName}/png?loadTimestamp=${imageLoadTimestamp}`}/>
         </div>
     );

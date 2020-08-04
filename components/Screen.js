@@ -12,6 +12,7 @@ export default function Screen({isGm}) {
     const [factor, setFactor] = useState(1);
     const [mapName, setMapName] = useState(null);
     const [mapFow, setMapFow] = useState(null);
+    const [mapMarker, setMapMarker] = useState(null);
     const [layerWidth, setLayerWidth] = useState(null);
 
     useEffect(() => {
@@ -34,11 +35,12 @@ export default function Screen({isGm}) {
         saveFogOfWar(null);
     }
 
-    async function saveFogOfWar(data) {
+    async function saveFogOfWar(data, marker) {
         await fetch(`/api/map/${mapName}/fow`, {
             method: "POST",
             body: JSON.stringify({
                 data,
+                marker,
             }),
         });
     }
@@ -54,6 +56,7 @@ export default function Screen({isGm}) {
             if (map) {
                 setMapName(map._id);
                 setMapFow(map.fow);
+                setMapMarker(map.marker);
             }
         } catch (e) {
 
@@ -81,7 +84,7 @@ export default function Screen({isGm}) {
             <DndContainer factor={factor}>
                 <CreatureLayer isGm={isGm} factor={factor} mapName={mapName}/>
                 <div className="screen d-flex justify-content-center" ref={layer}>
-                    <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow} resetFow={resetFow} saveFogOfWar={saveFogOfWar}/>
+                    <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow} marker={mapMarker} resetFow={resetFow} saveFogOfWar={saveFogOfWar}/>
                 </div>
             </DndContainer>
             {isGm && <ControlPanel mapName={mapName} resetFow={resetFow}/>}

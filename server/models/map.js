@@ -10,6 +10,9 @@ const schema = new Schema({
     fow: {
         type: String,
     },
+    marker: {
+        type: String,
+    },
 });
 
 model("map", schema);
