@@ -14,6 +14,8 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
     const [activeLayer, setActiveLayer] = useState("background");
     const [mode, setMode] = useState("Erase");
     const [color, setColor] = useState("#757575");
+    const [colorPicker, setColorPicker] = useState("#757575");
+    const [colorAlpha, setColorAlpha] = useState(1);
     const [size, setSize] = useState(80);
     const [sizeActive, setSizeActive] = useState(false);
     const [colorPickerActive, setColorPickerActive] = useState(false);
@@ -100,6 +102,7 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
         lastLine = new Konva.Line({
             stroke: color,
             strokeWidth: size,
+            opacity: colorAlpha,
             lineJoin: "round",
             lineCap: "round",
             globalCompositeOperation: mode === "Paint" ? 'source-over' : "destination-out",
@@ -147,6 +150,8 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
         if (mode !== "Paint") {
             setColorPickerActive(false);
             setColor(fogColor);
+            setColorPicker(fogColor);
+            setColorAlpha(1);
         }
     }
 
@@ -158,8 +163,10 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
         setColorPickerActive(!colorPickerActive);
     }
 
-    function colorSelected({hex}) {
+    function colorSelected({hex, rgb}) {
         setColor(hex);
+        setColorPicker(rgb);
+        setColorAlpha(rgb.a);
     }
 
     function sizeChanged(e) {
@@ -189,7 +196,8 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
                         <Form.Control type={"range"} onChange={sizeChanged} min={5} max={160} value={size} className="size-select"/>
                         {mode === "Paint" && <Button onClick={toggleColorPicker} className="btn btn-dark">Color</Button>}
                     </ButtonGroup>
-                    {colorPickerActive && <SketchPicker color={color} onChange={colorSelected} className="color-picker"/>}
+                    {colorPickerActive &&
+                    <SketchPicker color={colorPicker} disableAlpha={false} onChange={colorSelected} className="color-picker"/>}
                 </>
             )}
         </>
