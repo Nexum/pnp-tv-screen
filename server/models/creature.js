@@ -5,6 +5,7 @@ const schema = new Schema({
     name: String,
     health: Number,
     currentHealth: Number,
+    visible: Boolean,
     map: {
         type: String,
         ref: "map",

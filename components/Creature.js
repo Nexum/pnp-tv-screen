@@ -1,9 +1,13 @@
 import HealthBar from "./HealthBar";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMinus, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faMinus, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {useDrag} from "react-dnd";
 
-export default function Creature({isGm, _id, name, pos, health, currentHealth, factor}) {
+export default function Creature({isGm, _id, name, pos, health, visible, currentHealth, factor}) {
+    if (!visible && !isGm) {
+        return null;
+    }
+
     async function deleteCreature() {
         await fetch(`/api/creature/${_id}/delete`, {
             method: "DELETE",
@@ -16,6 +20,15 @@ export default function Creature({isGm, _id, name, pos, health, currentHealth, f
             body: JSON.stringify({
                 health: health,
                 currentHealth: (currentHealth) + modifier,
+            }),
+        });
+    }
+
+    async function toggleCreatureVisibility() {
+        await fetch(`/api/creature/${_id}/save`, {
+            method: "POST",
+            body: JSON.stringify({
+                visible: !visible,
             }),
         });
     }
@@ -42,7 +55,7 @@ export default function Creature({isGm, _id, name, pos, health, currentHealth, f
         <div ref={drag} className="creature d-flex flex-fill" style={{
             top: pos.y + "%",
             left: pos.x + "%",
-            width: Math.round(250 * factor) + "px",
+            width: Math.round(200 * factor) + "px",
             height: Math.round(31 * factor) + "px",
         }}>
             {isGm && (
@@ -55,6 +68,9 @@ export default function Creature({isGm, _id, name, pos, health, currentHealth, f
                 <>
                     <button className="btn btn-primary btn-sm" onClick={setCreatureHealth.bind(null, 1)}>
                         <FontAwesomeIcon icon={faPlus}/>
+                    </button>
+                    <button className={"btn btn-sm " + (visible ? "btn-success" : "btn-warning")} onClick={toggleCreatureVisibility}>
+                        <FontAwesomeIcon icon={faEye}/>
                     </button>
                     <button className="btn btn-danger btn-sm" onClick={deleteCreature}>
                         <FontAwesomeIcon icon={faTimes}/>
