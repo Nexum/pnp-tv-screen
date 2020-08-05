@@ -3,10 +3,10 @@ import {Stage, Layer, Rect, Image} from "react-konva";
 import Konva from "konva";
 import MapLayer from "./Map/MapLayer";
 import CreatureLayer from "./Map/CreatureLayer";
+import FowLayer from "./Map/FowLayer";
 
 export default function Map({map, isGm}) {
     const stage = useRef();
-    const fowLayer = useRef();
     const base = {
         width: 1920,
         height: 1080,
@@ -21,9 +21,9 @@ export default function Map({map, isGm}) {
     });
 
     return (
-        <Stage ref={stage} scale={scale} width={base.width} height={base.height}>
-            <Layer ref={fowLayer}></Layer>
+        <Stage className="screen" ref={stage} scale={scale} width={base.width} height={base.height}>
             <MapLayer map={map} isGm={isGm} base={base}></MapLayer>
+            <FowLayer map={map} isGm={isGm} base={base}></FowLayer>
             <CreatureLayer map={map} isGm={isGm} base={base}></CreatureLayer>
         </Stage>
     );

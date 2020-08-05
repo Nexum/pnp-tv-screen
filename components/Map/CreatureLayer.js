@@ -4,7 +4,7 @@ import Konva from "konva";
 import useSocket from "../../hooks/useSocket";
 import Creature from "./Object/Creature";
 
-export default function CreatureLayer({map}) {
+export default function CreatureLayer({map, isGm}) {
     const layer = useRef();
     const [creatures, setCreatures] = useState([]);
 
@@ -14,7 +14,7 @@ export default function CreatureLayer({map}) {
             return;
         }
 
-        const data = await fetch("/api/creature/find?map=" + map._id, {
+        const data = await fetch(`/api/creature/find?map=${map._id}&isGm=${isGm}`, {
             method: "GET",
         });
         setCreatures(await data.json());
