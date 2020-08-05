@@ -4,7 +4,7 @@ import ControlPanelFormContainer from "./ControlPanelFormContainer";
 import {Dropdown, DropdownButton, Button} from "react-bootstrap";
 import NewMapForm from "./NewMapForm";
 
-export default function MapForm({onClose, mapName}) {
+export default function MapForm({onClose, map}) {
     const [maps, setMaps] = useState([]);
 
     async function getData() {
@@ -29,7 +29,7 @@ export default function MapForm({onClose, mapName}) {
     function onFileSelected(e) {
         const data = new FormData();
         data.append("file", e.target.files[0]);
-        fetch(`/api/file/${mapName}/upload`, {
+        fetch(`/api/file/${map._id}/upload`, {
             method: "POST",
             body: data,
         });
@@ -46,12 +46,12 @@ export default function MapForm({onClose, mapName}) {
             <div className="p-2">
                 <DropdownButton title="Select Map">
                     {maps.map((v, i) => {
-                        return <Dropdown.Item key={i} active={v._id === mapName} onClick={setMap.bind(null, v._id)}>{v._id}</Dropdown.Item>;
+                        return <Dropdown.Item key={i} active={v._id === map._id} onClick={setMap.bind(null, v._id)}>{v._id}</Dropdown.Item>;
                     })}
                 </DropdownButton>
             </div>
             <div className="p-2">
-                <h4>Change {mapName}</h4>
+                <h4>Change {map._id}</h4>
                 <input type="file" onChange={onFileSelected}/>
             </div>
             <NewMapForm/>

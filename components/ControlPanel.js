@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons";
 import {DropdownButton, Dropdown} from "react-bootstrap";
 
-export default function ControlPanel({mapName, resetFow}) {
+export default function ControlPanel({map, resetFow}) {
     const [activePanel, setActivePanel] = useState([]);
 
     function toggleActive(panel) {
@@ -32,8 +32,8 @@ export default function ControlPanel({mapName, resetFow}) {
                     <Dropdown.Item eventKey="4" onClick={setActivePanel.bind(null, [])}>Close All</Dropdown.Item>
                 </DropdownButton>
             </div>
-            {activePanel.includes("creature") && <CreatureForm mapName={mapName} onClose={toggleActive.bind(null, "creature")}/>}
-            {activePanel.includes("map") && <MapForm mapName={mapName} onClose={toggleActive.bind(null, "map")}/>}
+            {activePanel.includes("creature") && <CreatureForm map={map} onClose={toggleActive.bind(null, "creature")}/>}
+            {activePanel.includes("map") && <MapForm map={map} onClose={toggleActive.bind(null, "map")}/>}
         </>
     );
 }

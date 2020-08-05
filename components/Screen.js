@@ -39,7 +39,7 @@ export default function Screen({isGm}) {
     return (
         <>
             <Map isGm={isGm} map={map}/>
-            {isGm && <ControlPanel/>}
+            {isGm && <ControlPanel map={map}/>}
         </>
     );
 }

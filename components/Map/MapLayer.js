@@ -3,7 +3,7 @@ import {Stage, Layer, Rect, Image} from "react-konva";
 import Konva from "konva";
 
 
-export default function MapLayer({map}) {
+export default function MapLayer({map, base}) {
     const layer = useRef();
 
     useEffect(() => {
@@ -12,16 +12,26 @@ export default function MapLayer({map}) {
             layer.current.destroyChildren();
 
             // scale image to fit
-            const imageScale = (layer.current.height() / image.height());
+            const imageScale = (base.height / image.height());
+
             image.scale({
                 x: imageScale,
                 y: imageScale,
             });
 
+            image.width(Math.round(image.width() * image.scaleX()));
+            image.height(Math.round(image.height() * image.scaleY()));
+            image.scaleX(1);
+            image.scaleY(1);
+
             // move image to center
             const centerX = (layer.current.width() / 2) - (image.width() / 2);
-            image.x(centerX);
+            image.position({
+                x: centerX,
+                y: 0,
+            });
 
+            image.cache();
             // draw image
             layer.current.add(image);
             layer.current.draw();
