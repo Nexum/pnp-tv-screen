@@ -6,23 +6,22 @@ export default function Map({className, mapName, marker, fow, isGm, resetFow, sa
     const [imageLoadTimestamp, setImageLoad] = useState();
     const [imageWidth, setImageWidth] = useState();
     const [imageHeight, setImageHeight] = useState();
-    const mapRef = useRef();
     const containerRef = useRef();
 
     useSocket(`file.${mapName}.changed`, () => {
         setImageLoad(Date.now());
     });
 
-    function handleMapLoad(e) {
+    function handleMapLoad(width, height) {
         containerRef.current.style.width = "auto";
-        setImageWidth(mapRef.current.clientWidth);
-        setImageHeight(mapRef.current.clientHeight);
+        setImageWidth(width);
+        setImageHeight(height);
     }
 
     return (
         <div className={(className || "") + " map"} ref={containerRef}>
-            <FogOfWar data={fow} marker={marker} resetFow={resetFow} width={imageWidth} height={imageHeight} isGm={isGm} onSave={saveFogOfWar}/>
-            <img ref={mapRef} onLoad={handleMapLoad} src={`/api/file/${mapName}/png?loadTimestamp=${imageLoadTimestamp}`}/>
+            <FogOfWar data={fow} mapSrc={`/api/file/${mapName}/png?loadTimestamp=${imageLoadTimestamp}`} marker={marker} onLoad={handleMapLoad}
+                      resetFow={resetFow} width={imageWidth} height={imageHeight} isGm={isGm} onSave={saveFogOfWar}/>
         </div>
     );
 }

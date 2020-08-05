@@ -7,8 +7,9 @@ import {SketchPicker} from 'react-color';
 let painting = false;
 let fogColor = "#757575";
 
-export default function FogOfWar({data, marker, width, height, isGm, onSave, resetFow}) {
+export default function FogOfWar({data, mapSrc, marker, width, height, isGm, onSave, onLoad}) {
     const stage = useRef();
+    const mapLayer = useRef();
     const layer = useRef();
     const layerMarker = useRef();
     const [activeLayer, setActiveLayer] = useState("background");
@@ -20,6 +21,14 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
     const [sizeActive, setSizeActive] = useState(false);
     const [colorPickerActive, setColorPickerActive] = useState(false);
     let lastLine;
+
+    useEffect(() => {
+        Konva.Image.fromURL(mapSrc, function (image) {
+            onLoad(image.attrs.image.width, image.attrs.image.height);
+            mapLayer.current.add(image);
+            mapLayer.current.draw();
+        });
+    }, [mapSrc]);
 
     useEffect(() => {
         if (stage.current) {
@@ -182,6 +191,8 @@ export default function FogOfWar({data, marker, width, height, isGm, onSave, res
                        onMouseUp={onMouseUp}
                        onMouseMove={onMouseMove}
                        className={"fog-of-war"}>
+                    <Layer ref={mapLayer}>
+                    </Layer>
                     <Layer ref={layer}>
                     </Layer>
                     <Layer ref={layerMarker}>
