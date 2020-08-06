@@ -16,12 +16,8 @@ export default async (req, res) => {
         _id: _id,
     }, {
         $set: {
-            _id: _id,
-            fow: data.data,
-            marker: data.marker,
+            fow: data.fow,
         },
-    }, {
-        upsert: true,
     });
 
     req.io.emit("map." + _id + ".changed");
