@@ -8,7 +8,7 @@ export default function FowLayer({map, isGm, base}) {
     const layer = useRef();
 
     return (
-        <Layer ref={layer} fill={"#FFFFFF"} width={base.width} height={base.height} opacity={isGm ? 0.8 : 1}>
+        <Layer ref={layer} fill={"#FFFFFF"} width={base.width} height={base.height} opacity={isGm ? 0 : 0}>
             <Rect fill={"#FFFFFF"} width={base.width} height={base.height}></Rect>
         </Layer>
     );
