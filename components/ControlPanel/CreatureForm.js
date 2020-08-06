@@ -1,5 +1,5 @@
 import {useState} from "react";
-import ControlPanelFormContainer from "./ControlPanelFormContainer";
+import FormContainer from "./FormContainer";
 
 export default function CreatureForm({onClose, map}) {
     const initialData = {
@@ -38,7 +38,7 @@ export default function CreatureForm({onClose, map}) {
     }
 
     return (
-        <ControlPanelFormContainer onClose={onClose}>
+        <FormContainer onClose={onClose}>
             <form onSubmit={onSubmit} className="creature-form form p-2 panel mt-2">
                 <h5>
                     New Creature
@@ -53,6 +53,6 @@ export default function CreatureForm({onClose, map}) {
                     <button className="btn btn-success flex-fill">Save</button>
                 </div>
             </form>
-        </ControlPanelFormContainer>
+        </FormContainer>
     );
 }

@@ -24,9 +24,8 @@ export default function FowLayer({map, isGm, base}) {
                 const fowData = JSON.parse(map.fow);
                 const image = Konva.Group.create(fowData);
 
-
+                image.cache();
                 if (!isGm) {
-                    image.cache();
                     image.filters([Konva.Filters.Blur]);
                     image.blurRadius(100);
                 }

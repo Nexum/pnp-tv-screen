@@ -1,11 +1,11 @@
-import CreatureForm from "./CreatureForm";
-import MapForm from "./MapForm";
+import CreatureForm from "./ControlPanel/CreatureForm";
+import MapForm from "./ControlPanel/MapForm";
 import {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons";
 import {DropdownButton, Dropdown} from "react-bootstrap";
 
-export default function ControlPanel({map, resetFow}) {
+export default function ControlPanel({map}) {
     const [activePanel, setActivePanel] = useState([]);
 
     function toggleActive(panel) {
@@ -18,6 +18,16 @@ export default function ControlPanel({map, resetFow}) {
         } else {
             setActivePanel([...activePanel, panel]);
         }
+    }
+
+
+    async function resetFow() {
+        await fetch(`/api/map/${map._id}/fow`, {
+            method: "POST",
+            body: JSON.stringify({
+                fow: null,
+            }),
+        });
     }
 
     return (

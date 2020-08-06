@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import useSocket from "../hooks/useSocket";
-import ControlPanelFormContainer from "./ControlPanelFormContainer";
+import useSocket from "../../hooks/useSocket";
+import FormContainer from "./FormContainer";
 import {Dropdown, DropdownButton, Button} from "react-bootstrap";
 import NewMapForm from "./NewMapForm";
 
@@ -42,7 +42,7 @@ export default function MapForm({onClose, map}) {
     }
 
     return (
-        <ControlPanelFormContainer onClose={onClose}>
+        <FormContainer onClose={onClose}>
             <div className="p-2">
                 <DropdownButton title="Select Map">
                     {maps.map((v, i) => {
@@ -55,6 +55,6 @@ export default function MapForm({onClose, map}) {
                 <input type="file" onChange={onFileSelected}/>
             </div>
             <NewMapForm/>
-        </ControlPanelFormContainer>
+        </FormContainer>
     );
 }

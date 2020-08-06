@@ -3,7 +3,7 @@ import {useDrag} from "react-dnd";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 
-export default function ControlPanelFormContainer({children, onClose}) {
+export default function FormContainer({children, onClose}) {
     const [pos, setPos] = useState({x: 80, y: 0});
     const [{isDragging}, drag] = useDrag({
         item: {
