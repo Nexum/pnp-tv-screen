@@ -24,6 +24,7 @@ export default function FowLayer({map, isGm, base}) {
                 const fowData = JSON.parse(map.fow);
                 const image = Konva.Group.create(fowData);
 
+
                 if (!isGm) {
                     image.cache();
                     image.filters([Konva.Filters.Blur]);
@@ -57,7 +58,7 @@ export default function FowLayer({map, isGm, base}) {
         lastLine = new Konva.Line({
             stroke: fogColor,
             strokeWidth: 60,
-            opacity: 1,
+            opacity: 2,
             lineJoin: "round",
             lineCap: "round",
             globalCompositeOperation: "destination-out",
@@ -97,6 +98,10 @@ export default function FowLayer({map, isGm, base}) {
     }
 
     async function save(data) {
+        if (!isGm) {
+            return;
+        }
+
         await fetch(`/api/map/${map._id}/fow`, {
             method: "POST",
             body: JSON.stringify({
