@@ -21,6 +21,7 @@ export default async (req, res) => {
     });
 
     req.io.emit("map." + _id + ".changed");
+    req.io.emit("map.changed");
 
     res.json(await mapModel.findOne({_id: _id}));
 };

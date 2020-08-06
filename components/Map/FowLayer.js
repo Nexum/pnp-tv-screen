@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {Stage, Layer, Rect, Image} from "react-konva";
+import {Group, Layer} from "react-konva";
 import Konva from "konva";
 import useSocket from "../../hooks/useSocket";
 import Creature from "./Object/Creature";
@@ -8,41 +8,39 @@ let painting, lastLine;
 
 export default function FowLayer({map, isGm, base}) {
     const layer = useRef();
+    const group = useRef();
     const fogColor = "#dedede";
 
     useEffect(() => {
-        if (layer.current) {
-            layer.current.destroyChildren();
+        if (group.current) {
+            group.current.destroyChildren();
 
-            let newImage = null;
+            try {
 
-            if (map.fow) {
-                const imageObj = document.createElement("img");
-                imageObj.src = map.fow;
-                imageObj.onload = function () {
-                    newImage = new Konva.Image({
-                        image: imageObj,
-                        width: base.width,
-                        height: base.height,
-                    });
+                if (!map.fow) {
+                    throw new Error("no fow");
+                }
 
-                    if (!isGm) {
-                        newImage.cache();
-                        newImage.filters([Konva.Filters.Blur]);
-                        newImage.blurRadius(100);
-                    }
+                const fowData = JSON.parse(map.fow);
+                const image = Konva.Group.create(fowData);
 
-                    layer.current.add(newImage);
-                    layer.current.batchDraw();
-                };
-            } else {
-                newImage = new Konva.Rect({
+                if (!isGm) {
+                    image.cache();
+                    image.filters([Konva.Filters.Blur]);
+                    image.blurRadius(100);
+                }
+
+                group.current.add(image);
+                layer.current.batchDraw();
+            } catch (e) {
+
+                const image = new Konva.Rect({
                     fill: fogColor,
                     width: base.width,
                     height: base.height,
                 });
 
-                layer.current.add(newImage);
+                group.current.add(image);
                 layer.current.batchDraw();
             }
         }
@@ -58,15 +56,18 @@ export default function FowLayer({map, isGm, base}) {
 
         lastLine = new Konva.Line({
             stroke: fogColor,
-            strokeWidth: 30,
+            strokeWidth: 60,
             opacity: 1,
             lineJoin: "round",
             lineCap: "round",
             globalCompositeOperation: "destination-out",
-            points: [pos.x, pos.y],
+            points: [
+                pos.x / layer.current.getStage().scaleX(),
+                pos.y / layer.current.getStage().scaleY(),
+            ],
         });
 
-        layer.current.add(lastLine);
+        group.current.add(lastLine);
     }
 
     function onMouseUp(e) {
@@ -76,7 +77,7 @@ export default function FowLayer({map, isGm, base}) {
 
         lastLine = null;
         painting = false;
-        save(layer.current.toDataURL());
+        save(group.current.toJSON());
     }
 
     function onMouseMove(e) {
@@ -85,10 +86,13 @@ export default function FowLayer({map, isGm, base}) {
         }
 
         const pos = layer.current.getStage().getPointerPosition();
-        const newPoints = lastLine.points().concat([pos.x, pos.y]);
+
+        const newPoints = lastLine.points().concat([
+            pos.x / layer.current.getStage().scaleX(),
+            pos.y / layer.current.getStage().scaleY(),
+        ]);
 
         lastLine.points(newPoints);
-
         layer.current.batchDraw();
     }
 
@@ -106,10 +110,8 @@ export default function FowLayer({map, isGm, base}) {
                onMouseDown={onMouseDown}
                onMouseUp={onMouseUp}
                onMouseMove={onMouseMove}
-               width={base.width}
-               height={base.height}
                opacity={isGm ? 0.8 : 1}>
-
+            <Group ref={group}></Group>
         </Layer>
     );
 }
