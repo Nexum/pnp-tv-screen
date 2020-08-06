@@ -111,7 +111,7 @@ export default function FowLayer({map, isGm, base}) {
                onMouseUp={onMouseUp}
                onMouseMove={onMouseMove}
                opacity={isGm ? 0.8 : 1}>
-            <Group ref={group}></Group>
+            <Group ref={group}/>
         </Layer>
     );
 }
