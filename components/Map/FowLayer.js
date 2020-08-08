@@ -9,6 +9,7 @@ export default function FowLayer({map, isGm, base}) {
     const line = useRef();
     const fow = useRef();
     const group = useRef();
+    const [paintWidth, setPaintWidth] = useState(80);
     const fogColor = "#dedede";
 
     useEffect(() => {
@@ -77,13 +78,39 @@ export default function FowLayer({map, isGm, base}) {
             return;
         }
 
-        const pos = layer.current.getStage().getPointerPosition();
-        line.current.points([
-            pos.x / layer.current.getStage().scaleX(),
-            pos.y / layer.current.getStage().scaleY(),
-        ]);
+        line.current.points(getPointerCoords());
 
         painting = true;
+    }
+
+    function getPointerCoords() {
+        if (layer.current) {
+            const pos = layer.current.getStage().getPointerPosition();
+            let newPoint = [
+                pos.x / layer.current.getStage().scaleX(),
+                pos.y / layer.current.getStage().scaleY(),
+            ];
+
+            const halfBrushWidht = paintWidth / 2;
+            const edgeX = layer.current.getStage().width() - halfBrushWidht;
+            const edgeY = layer.current.getStage().height() - halfBrushWidht;
+
+            if (newPoint[0] > edgeX) {
+                newPoint[0] = edgeX;
+            } else if (newPoint[0] < halfBrushWidht) {
+                newPoint[0] = halfBrushWidht;
+            }
+
+            if (newPoint[1] > edgeY) {
+                newPoint[1] = edgeY;
+            } else if (newPoint[1] < halfBrushWidht) {
+                newPoint[1] = halfBrushWidht;
+            }
+
+            return newPoint;
+        }
+
+        return [];
     }
 
     function onMouseMove(e) {
@@ -91,11 +118,7 @@ export default function FowLayer({map, isGm, base}) {
             return;
         }
 
-        const pos = layer.current.getStage().getPointerPosition();
-        const newPoints = line.current.points().concat([
-            pos.x / layer.current.getStage().scaleX(),
-            pos.y / layer.current.getStage().scaleY(),
-        ]);
+        const newPoints = line.current.points().concat(getPointerCoords());
 
         line.current.points(newPoints);
         layer.current.batchDraw();
@@ -122,6 +145,7 @@ export default function FowLayer({map, isGm, base}) {
                onTouchStart={onMouseDown}
                onMouseUp={onMouseUp}
                onTouchEnd={onMouseUp}
+               onMouseLeave={onMouseUp}
                onMouseMove={onMouseMove}
                onTouchMove={onMouseMove}
         >
@@ -139,7 +163,7 @@ export default function FowLayer({map, isGm, base}) {
                 <Line
                     ref={line}
                     stroke={fogColor}
-                    strokeWidth={60}
+                    strokeWidth={paintWidth}
                     opacity={1}
                     lineJoin="round"
                     lineCap="round"
