@@ -1,11 +1,15 @@
 import {useEffect, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import Map from "./Map";
-import ControlPanel from "./ControlPanel";
 import ToolBar from "./ToolBar";
+import gm from "../pages/gm";
 
 export default function Screen({isGm}) {
     const [map, setMap] = useState();
+    const [gmOptions, setGmOptions] = useState({
+        fowBrushSize: 120,
+        fowMode: "remove"
+    });
 
     async function getActiveMap() {
         const data = await fetch("/api/map/active", {
@@ -33,15 +37,17 @@ export default function Screen({isGm}) {
         getActiveMap();
     });
 
-    if (!map) {
-        return null;
+    function changeGmOptions(update) {
+        setGmOptions({
+            ...gmOptions,
+            ...update,
+        });
     }
 
     return (
         <>
-            <Map isGm={isGm} map={map}/>
-            {isGm && <ControlPanel map={map}/>}
-            {isGm && <ToolBar map={map}/>}
+            {map && <Map isGm={isGm} map={map} gmOptions={gmOptions}/>}
+            {isGm && <ToolBar map={map} setGmOptions={changeGmOptions} gmOptions={gmOptions}/>}
         </>
     );
 }

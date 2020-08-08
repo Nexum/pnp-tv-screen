@@ -2,7 +2,7 @@ const {Schema, Types, model} = require("mongoose");
 
 
 const schema = new Schema({
-    _id: String,
+    name: String,
     active: {
         type: Boolean,
         default: false,

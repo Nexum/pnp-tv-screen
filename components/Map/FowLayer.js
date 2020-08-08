@@ -4,12 +4,11 @@ import Konva from "konva";
 
 let painting;
 
-export default function FowLayer({map, isGm, base}) {
+export default function FowLayer({map, isGm, base, gmOptions}) {
     const layer = useRef();
     const line = useRef();
     const fow = useRef();
     const group = useRef();
-    const [paintWidth, setPaintWidth] = useState(80);
     const fogColor = "#dedede";
 
     useEffect(() => {
@@ -41,6 +40,7 @@ export default function FowLayer({map, isGm, base}) {
                 group.current.add(newImage);
                 newImage.moveToTop();
                 line.current.points([]);
+                line.current.moveToTop();
                 layer.current.batchDraw();
             };
         }
@@ -80,6 +80,12 @@ export default function FowLayer({map, isGm, base}) {
 
         line.current.points(getPointerCoords());
 
+        if (gmOptions.fowMode === "remove") {
+            line.current.globalCompositeOperation("destination-out");
+        } else {
+            line.current.globalCompositeOperation("destination-over");
+        }
+
         painting = true;
     }
 
@@ -91,7 +97,7 @@ export default function FowLayer({map, isGm, base}) {
                 pos.y / layer.current.getStage().scaleY(),
             ];
 
-            const halfBrushWidht = paintWidth / 2;
+            const halfBrushWidht = gmOptions.fowBrushSize / 2;
             const edgeX = layer.current.getStage().width() - halfBrushWidht;
             const edgeY = layer.current.getStage().height() - halfBrushWidht;
 
@@ -130,13 +136,24 @@ export default function FowLayer({map, isGm, base}) {
         }
 
         painting = false;
-        line.current.globalCompositeOperation(null);
-        fow.current && fow.current.globalCompositeOperation(null);
-        fow.current && fow.current.blurRadius(0);
-        save(group.current.toDataURL());
-        fow.current && fow.current.globalCompositeOperation("destination-out");
-        fow.current && fow.current.blurRadius(50);
-        line.current.globalCompositeOperation("destination-out");
+
+        if (gmOptions.fowMode === "remove") {
+            line.current.globalCompositeOperation(null);
+            fow.current && fow.current.globalCompositeOperation(null);
+            fow.current && fow.current.blurRadius(0);
+            save(group.current.toDataURL());
+            fow.current && fow.current.globalCompositeOperation("destination-out");
+            fow.current && fow.current.blurRadius(50);
+            line.current.globalCompositeOperation("destination-out");
+        } else {
+            line.current.globalCompositeOperation("destination-out");
+            fow.current && fow.current.globalCompositeOperation(null);
+            fow.current && fow.current.blurRadius(0);
+            save(group.current.toDataURL());
+            fow.current && fow.current.globalCompositeOperation("destination-out");
+            fow.current && fow.current.blurRadius(50);
+            line.current.globalCompositeOperation("destination-out");
+        }
     }
 
     return (
@@ -163,11 +180,11 @@ export default function FowLayer({map, isGm, base}) {
                 <Line
                     ref={line}
                     stroke={fogColor}
-                    strokeWidth={paintWidth}
+                    strokeWidth={gmOptions.fowBrushSize}
                     opacity={1}
                     lineJoin="round"
                     lineCap="round"
-                    globalCompositeOperation="destination-out"
+                    globalCompositeOperation={"destination-out"}
                 />
             </Group>
         </Layer>

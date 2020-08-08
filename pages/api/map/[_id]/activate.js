@@ -3,7 +3,8 @@ const mapModel = require("mongoose").model("map");
 export default async (req, res) => {
     let {_id} = req.query;
 
-    await mapModel.update({}, {
+    await mapModel.update({
+    }, {
         $set: {
             active: false,
         },
