@@ -9,22 +9,25 @@ export default function ControlPanel({map, setGmOptions, gmOptions}) {
     const panels = [
         {
             label: "FOW",
+            layer: "fow",
             config: FowConfig,
             button: useRef(),
         },
         {
             label: "Paint",
-            isPaint: true,
+            layer: "marker",
             config: PaintConfig,
             button: useRef(),
         },
         {
             label: "Maps",
+            layer: "map",
             config: MapConfig,
             button: useRef(),
         },
         {
             label: "Creatures",
+            layer: "creature",
             button: useRef(),
             config: CreatureConfig,
         },
@@ -32,33 +35,25 @@ export default function ControlPanel({map, setGmOptions, gmOptions}) {
     const [activePanel, setActivePanel] = useState(null);
 
     function togglePanel(panel) {
+
         if (activePanel === panel) {
-
-            if(panels[panel].isPaint) {
-                setGmOptions({
-                    paintModeEnabled: false
-                });
-            }
-
+            setGmOptions({
+                activeLayer: null,
+            });
             setActivePanel(null);
         } else {
+            setGmOptions({
+                activeLayer: panels[panel].layer,
+            });
             setActivePanel(panel);
-
-            if(panels[panel].isPaint) {
-                setGmOptions({
-                    paintModeEnabled: true
-                });
-            } else {
-                setGmOptions({
-                    paintModeEnabled: false
-                });
-            }
         }
     }
 
+    /*
     useEffect(() => {
         togglePanel(1);
-    }, [])
+    }, []);
+     */
 
     return (
         <>

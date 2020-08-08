@@ -9,7 +9,6 @@ export default function Screen({isGm}) {
     const [gmOptions, setGmOptions] = useState({
         fowBrushSize: 120,
         fowMode: "remove",
-        paintModeEnabled: false,
         paintBrushSize: 40,
         paintColor: "#FF0000",
         paintColorRBGA: {

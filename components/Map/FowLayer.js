@@ -75,7 +75,7 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
     }
 
     function onMouseDown(e) {
-        if (!isGm || gmOptions.paintModeEnabled) {
+        if (!isGm ) {
             return;
         }
 
@@ -121,7 +121,7 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
     }
 
     function onMouseMove(e) {
-        if (!isGm || !painting || gmOptions.paintModeEnabled) {
+        if (!isGm || !painting ) {
             return;
         }
 
@@ -132,7 +132,7 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
     }
 
     function onMouseUp(e) {
-        if (!isGm || !painting || gmOptions.paintModeEnabled) {
+        if (!isGm || !painting ) {
             return;
         }
 

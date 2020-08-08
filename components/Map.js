@@ -21,14 +21,36 @@ export default function Map({map, isGm, gmOptions}) {
         x: screenSize.height / base.height,
         y: screenSize.height / base.height,
     });
+    const layers = {
+        background: <BackgroundLayer key="background" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></BackgroundLayer>,
+        map: <MapLayer key="map" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MapLayer>,
+        fow: <FowLayer key="fow" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></FowLayer>,
+        marker: <MarkerLayer key="marker" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MarkerLayer>,
+        creature: <CreatureLayer key="creature" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></CreatureLayer>,
+    };
+
+    let layerOrder = [
+        "background",
+        "map",
+        "marker",
+        "fow",
+        "creature",
+    ];
+    if (gmOptions.activeLayer === "marker") {
+        layerOrder = [
+            "background",
+            "map",
+            "fow",
+            "marker",
+            "creature",
+        ];
+    }
 
     return (
         <Stage className="screen" ref={stage} scale={scale} width={base.width} height={base.height}>
-            <BackgroundLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></BackgroundLayer>
-            <MapLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MapLayer>
-            <FowLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></FowLayer>
-            <MarkerLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MarkerLayer>
-            <CreatureLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></CreatureLayer>
+            {layerOrder.map((v, i) => {
+                return layers[v];
+            })}
         </Stage>
     );
 }
