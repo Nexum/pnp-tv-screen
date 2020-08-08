@@ -8,7 +8,18 @@ export default function Screen({isGm}) {
     const [map, setMap] = useState();
     const [gmOptions, setGmOptions] = useState({
         fowBrushSize: 120,
-        fowMode: "remove"
+        fowMode: "remove",
+        paintModeEnabled: false,
+        paintBrushSize: 40,
+        paintColor: "#FF0000",
+        paintColorRBGA: {
+            r: 255,
+            g: 0,
+            b: 0,
+            a: 0.8,
+        },
+        paintColorAlpha: 1,
+        paintMode: "paint",
     });
 
     async function getActiveMap() {

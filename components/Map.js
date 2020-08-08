@@ -4,6 +4,7 @@ import Konva from "konva";
 import MapLayer from "./Map/MapLayer";
 import CreatureLayer from "./Map/CreatureLayer";
 import FowLayer from "./Map/FowLayer";
+import MarkerLayer from "./Map/MarkerLayer";
 import BackgroundLayer from "./Map/BackgroundLayer";
 
 export default function Map({map, isGm, gmOptions}) {
@@ -26,6 +27,7 @@ export default function Map({map, isGm, gmOptions}) {
             <BackgroundLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></BackgroundLayer>
             <MapLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MapLayer>
             <FowLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></FowLayer>
+            <MarkerLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MarkerLayer>
             <CreatureLayer map={map} isGm={isGm} base={base} gmOptions={gmOptions}></CreatureLayer>
         </Stage>
     );

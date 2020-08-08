@@ -8,36 +8,30 @@ let painting;
 export default function FowLayer({map, isGm, base, gmOptions}) {
     const layer = useRef();
     const line = useRef();
-    const fow = useRef();
+    const marker = useRef();
     const group = useRef();
-    const fogColor = "#dedede";
 
     useEffect(() => {
         if (group.current) {
-            if (fow.current) {
-                fow.current.destroy();
+            if (marker.current) {
+                marker.current.destroy();
             }
 
-            if (!map.fow) {
+            if (!map.marker) {
                 layer.current.batchDraw();
                 return;
             }
 
             const imageObj = document.createElement("img");
-            imageObj.src = map.fow;
+            imageObj.src = map.marker;
             imageObj.onload = function () {
                 const newImage = new Konva.Image({
                     image: imageObj,
                     width: layer.current.getStage().width(),
                     height: layer.current.getStage().height(),
-                    globalCompositeOperation: "destination-out",
                 });
 
-                newImage.cache();
-                newImage.filters([Konva.Filters.Blur]);
-                newImage.blurRadius(50);
-
-                fow.current = newImage;
+                marker.current = newImage;
                 group.current.add(newImage);
                 newImage.moveToTop();
                 line.current.points([]);
@@ -47,46 +41,25 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
         }
     }, [map]);
 
-    useEffect(() => {
-        Konva.Image.fromURL(`/img/fow_base_2.jpg`, function (image) {
-            image.cache();
-            if (isGm) {
-                image.opacity(0.8);
-            }
-            image.filters([Konva.Filters.Grayscale]);
-
-            layer.current.add(image);
-            image.moveToBottom();
-            layer.current.batchDraw();
-        });
-    }, []);
-
     async function save(data) {
         if (!isGm) {
             return;
         }
 
-        await fetch(`/api/map/${map._id}/fow`, {
+        await fetch(`/api/map/${map._id}/marker`, {
             method: "POST",
             body: JSON.stringify({
-                fow: data,
+                marker: data,
             }),
         });
     }
 
     function onMouseDown(e) {
-        if (!isGm || gmOptions.paintModeEnabled) {
+        if (!isGm || !gmOptions.paintModeEnabled) {
             return;
         }
 
         line.current.points(getPointerCoords());
-
-        if (gmOptions.fowMode === "remove") {
-            line.current.globalCompositeOperation("destination-out");
-        } else {
-            line.current.globalCompositeOperation("destination-over");
-        }
-
         painting = true;
     }
 
@@ -98,7 +71,7 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
                 pos.y / layer.current.getStage().scaleY(),
             ];
 
-            const halfBrushWidht = gmOptions.fowBrushSize / 2;
+            const halfBrushWidht = gmOptions.paintBrushSize / 2;
             const edgeX = layer.current.getStage().width() - halfBrushWidht;
             const edgeY = layer.current.getStage().height() - halfBrushWidht;
 
@@ -121,7 +94,7 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
     }
 
     function onMouseMove(e) {
-        if (!isGm || !painting || gmOptions.paintModeEnabled) {
+        if (!isGm || !painting || !gmOptions.paintModeEnabled) {
             return;
         }
 
@@ -132,29 +105,12 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
     }
 
     function onMouseUp(e) {
-        if (!isGm || !painting || gmOptions.paintModeEnabled) {
+        if (!isGm || !painting || !gmOptions.paintModeEnabled) {
             return;
         }
 
         painting = false;
-
-        if (gmOptions.fowMode === "remove") {
-            line.current.globalCompositeOperation(null);
-            fow.current && fow.current.globalCompositeOperation(null);
-            fow.current && fow.current.blurRadius(0);
-            save(group.current.toDataURL());
-            fow.current && fow.current.globalCompositeOperation("destination-out");
-            fow.current && fow.current.blurRadius(50);
-            line.current.globalCompositeOperation("destination-out");
-        } else {
-            line.current.globalCompositeOperation("destination-out");
-            fow.current && fow.current.globalCompositeOperation(null);
-            fow.current && fow.current.blurRadius(0);
-            save(group.current.toDataURL());
-            fow.current && fow.current.globalCompositeOperation("destination-out");
-            fow.current && fow.current.blurRadius(50);
-            line.current.globalCompositeOperation("destination-out");
-        }
+        save(group.current.toDataURL());
     }
 
     return (
@@ -180,12 +136,12 @@ export default function FowLayer({map, isGm, base, gmOptions}) {
                 </Rect>
                 <Line
                     ref={line}
-                    stroke={fogColor}
-                    strokeWidth={gmOptions.fowBrushSize}
-                    opacity={1}
+                    stroke={gmOptions.paintColor}
+                    strokeWidth={gmOptions.paintBrushSize}
+                    opacity={gmOptions.paintColorAlpha}
                     lineJoin="round"
                     lineCap="round"
-                    globalCompositeOperation={"destination-out"}
+                    globalCompositeOperation={gmOptions.paintMode === "erase" ? "destination-out" : null}
                 />
             </Group>
         </Layer>

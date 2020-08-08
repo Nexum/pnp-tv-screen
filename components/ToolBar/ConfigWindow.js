@@ -20,7 +20,7 @@ export default function ConfigWindow({map, panel, setGmOptions, gmOptions}) {
 
 
     return (
-        <div className="config-window card" ref={win} style={{
+        <div draggable className="config-window card" ref={win} style={{
             ...pos,
         }}>
             <div className="card-body">

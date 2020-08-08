@@ -1,14 +1,21 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import FowConfig from "./ToolBar/FowConfig";
 import ConfigWindow from "./ToolBar/ConfigWindow";
 import MapConfig from "./ToolBar/MapConfig";
 import CreatureConfig from "./ToolBar/CreatureConfig";
+import PaintConfig from "./ToolBar/PaintConfig";
 
 export default function ControlPanel({map, setGmOptions, gmOptions}) {
     const panels = [
         {
             label: "FOW",
             config: FowConfig,
+            button: useRef(),
+        },
+        {
+            label: "Paint",
+            isPaint: true,
+            config: PaintConfig,
             button: useRef(),
         },
         {
@@ -22,15 +29,36 @@ export default function ControlPanel({map, setGmOptions, gmOptions}) {
             config: CreatureConfig,
         },
     ];
-    const [activePanel, setActivePanel] = useState(0);
+    const [activePanel, setActivePanel] = useState(null);
 
     function togglePanel(panel) {
         if (activePanel === panel) {
+
+            if(panels[panel].isPaint) {
+                setGmOptions({
+                    paintModeEnabled: false
+                });
+            }
+
             setActivePanel(null);
         } else {
             setActivePanel(panel);
+
+            if(panels[panel].isPaint) {
+                setGmOptions({
+                    paintModeEnabled: true
+                });
+            } else {
+                setGmOptions({
+                    paintModeEnabled: false
+                });
+            }
         }
     }
+
+    useEffect(() => {
+        togglePanel(1);
+    }, [])
 
     return (
         <>
