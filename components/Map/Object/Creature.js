@@ -8,7 +8,6 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
     const transformer = useRef();
     const [label, setLabel] = useState();
     const [percentage, setPercentage] = useState(currentHealth / health);
-    const [isDragging, setIsDragging] = useState(false);
     const [isSelected, setIsSelected] = useState(false);
 
     useEffect(() => {
@@ -16,7 +15,7 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
     }, [health, currentHealth]);
 
     useEffect(() => {
-        setLabel(`${name} ${percentage}%`);
+        setLabel(`${name}%`);
     }, [name, percentage]);
 
     useEffect(() => {
@@ -44,11 +43,10 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
     }
 
     function onDragStart() {
-        setIsDragging(true);
+        group.current.moveToTop();
     }
 
     function onDragEnd(e) {
-        setIsDragging(false);
         saveCreature({
             pos: {
                 x: e.target.x(),
@@ -96,19 +94,42 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
                 width={width}
                 height={height}
             >
-                <Rect width={width} height={height} fill={"#FFFFFF"}>
+                <Rect
+                    width={width + 4}
+                    height={height + 4}
+                    cornerRadius={3}
+                    fill={"#240000"}
+                >
                 </Rect>
 
-                <Rect width={width * (percentage / 100)} height={height} fill={"#ff6060"}>
+                <Rect
+                    width={width * (percentage / 100)}
+                    height={height}
+                    x={2}
+                    y={2}
+                    cornerRadius={3}
+                    fill={"#8a0303"}>
                 </Rect>
 
-                <Text text={label}
-                      padding={10}
-                      fontStyle={"bold"}/>
+                <Text
+                    text={label}
+                    fill={"#d6d6d6"}
+                    padding={12}
+                    fontStyle={"bold"}
+                />
+
+                <Text
+                    text={percentage + "%"}
+                    fill={"#d6d6d6"}
+                    padding={12}
+                    x={width - 50}
+                    fontStyle={"bold"}
+                />
+
                 {isGm && <Text
                     text="👁"
                     fontSize={36}
-                    x={160}
+                    x={width + 5}
                     fill={visible ? "#a5ff6c" : "#FF0000"}
                     onClick={saveCreature.bind(null, {
                         visible: !visible,

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import Map from "./Map";
 import ControlPanel from "./ControlPanel";
+import ToolBar from "./ToolBar";
 
 export default function Screen({isGm}) {
     const [map, setMap] = useState();
@@ -40,6 +41,7 @@ export default function Screen({isGm}) {
         <>
             <Map isGm={isGm} map={map}/>
             {isGm && <ControlPanel map={map}/>}
+            {isGm && <ToolBar map={map}/>}
         </>
     );
 }

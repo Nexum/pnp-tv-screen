@@ -18,6 +18,7 @@ export default function FowLayer({map, isGm, base}) {
             }
 
             if (!map.fow) {
+                layer.current.batchDraw();
                 return;
             }
 
@@ -31,15 +32,14 @@ export default function FowLayer({map, isGm, base}) {
                     globalCompositeOperation: "destination-out",
                 });
 
-                if (!isGm) {
-                    newImage.cache();
-                    newImage.filters([Konva.Filters.Blur]);
-                    newImage.blurRadius(50);
-                }
+                newImage.cache();
+                newImage.filters([Konva.Filters.Blur]);
+                newImage.blurRadius(50);
 
                 fow.current = newImage;
                 group.current.add(newImage);
                 newImage.moveToTop();
+                line.current.points([]);
                 layer.current.batchDraw();
             };
         }
@@ -49,7 +49,7 @@ export default function FowLayer({map, isGm, base}) {
         Konva.Image.fromURL(`/img/fow_base_2.jpg`, function (image) {
             image.cache();
             if (isGm) {
-                image.opacity(0.7);
+                image.opacity(0.8);
             }
             image.filters([Konva.Filters.Grayscale]);
 
@@ -109,8 +109,10 @@ export default function FowLayer({map, isGm, base}) {
         painting = false;
         line.current.globalCompositeOperation(null);
         fow.current && fow.current.globalCompositeOperation(null);
+        fow.current && fow.current.blurRadius(0);
         save(group.current.toDataURL());
         fow.current && fow.current.globalCompositeOperation("destination-out");
+        fow.current && fow.current.blurRadius(50);
         line.current.globalCompositeOperation("destination-out");
     }
 
