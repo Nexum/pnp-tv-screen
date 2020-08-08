@@ -1,100 +1,63 @@
-import {useCallback, useEffect, useRef, useState} from "react";
-import {Group, Layer} from "react-konva";
+import {useEffect, useRef, useState} from "react";
+import {Group, Layer, Line, Rect} from "react-konva";
 import Konva from "konva";
-import useSocket from "../../hooks/useSocket";
-import Creature from "./Object/Creature";
 
-let painting, lastLine;
+let painting;
 
 export default function FowLayer({map, isGm, base}) {
     const layer = useRef();
+    const line = useRef();
+    const fow = useRef();
     const group = useRef();
     const fogColor = "#dedede";
 
     useEffect(() => {
         if (group.current) {
-            group.current.destroyChildren();
+            if (fow.current) {
+                fow.current.destroy();
+            }
 
-            try {
+            if (!map.fow) {
+                return;
+            }
 
-                if (!map.fow) {
-                    throw new Error("no fow");
-                }
-
-                const fowData = JSON.parse(map.fow);
-                const image = Konva.Group.create(fowData);
-
-                image.cache();
-                if (!isGm) {
-                    image.filters([Konva.Filters.Blur]);
-                    image.blurRadius(100);
-                }
-
-                group.current.add(image);
-                layer.current.batchDraw();
-            } catch (e) {
-
-                const image = new Konva.Rect({
-                    fill: fogColor,
-                    width: base.width,
-                    height: base.height,
+            const imageObj = document.createElement("img");
+            imageObj.src = map.fow;
+            imageObj.onload = function () {
+                const newImage = new Konva.Image({
+                    image: imageObj,
+                    width: layer.current.getStage().width(),
+                    height: layer.current.getStage().height(),
+                    globalCompositeOperation: "destination-out",
                 });
 
-                group.current.add(image);
+                if (!isGm) {
+                    newImage.cache();
+                    newImage.filters([Konva.Filters.Blur]);
+                    newImage.blurRadius(50);
+                }
+
+                fow.current = newImage;
+                group.current.add(newImage);
+                newImage.moveToTop();
                 layer.current.batchDraw();
-            }
+            };
         }
     }, [map]);
 
-    function onMouseDown(e) {
-        if (!isGm) {
-            return;
-        }
+    useEffect(() => {
+        Konva.Image.fromURL(`/img/fow_base_2.jpg`, function (image) {
+            image.cache();
+            if (isGm) {
+                image.opacity(0.7);
+            }
+            image.filters([Konva.Filters.Grayscale]);
 
-        painting = true;
-        let pos = layer.current.getStage().getPointerPosition();
-
-        lastLine = new Konva.Line({
-            stroke: fogColor,
-            strokeWidth: 60,
-            opacity: 2,
-            lineJoin: "round",
-            lineCap: "round",
-            globalCompositeOperation: "destination-out",
-            points: [
-                pos.x / layer.current.getStage().scaleX(),
-                pos.y / layer.current.getStage().scaleY(),
-            ],
+            layer.current.add(image);
+            image.moveToBottom();
+            layer.current.batchDraw();
         });
-
-        group.current.add(lastLine);
-    }
-
-    function onMouseUp(e) {
-        if (!isGm || !painting) {
-            return;
-        }
-
-        lastLine = null;
-        painting = false;
-        save(group.current.toJSON());
-    }
-
-    function onMouseMove(e) {
-        if (!lastLine || !isGm || !painting) {
-            return;
-        }
-
-        const pos = layer.current.getStage().getPointerPosition();
-
-        const newPoints = lastLine.points().concat([
-            pos.x / layer.current.getStage().scaleX(),
-            pos.y / layer.current.getStage().scaleY(),
-        ]);
-
-        lastLine.points(newPoints);
-        layer.current.batchDraw();
-    }
+    }, []);
 
     async function save(data) {
         if (!isGm) {
@@ -109,13 +72,78 @@ export default function FowLayer({map, isGm, base}) {
         });
     }
 
+    function onMouseDown(e) {
+        if (!isGm) {
+            return;
+        }
+
+        const pos = layer.current.getStage().getPointerPosition();
+        line.current.points([
+            pos.x / layer.current.getStage().scaleX(),
+            pos.y / layer.current.getStage().scaleY(),
+        ]);
+
+        painting = true;
+    }
+
+    function onMouseMove(e) {
+        if (!isGm || !painting) {
+            return;
+        }
+
+        const pos = layer.current.getStage().getPointerPosition();
+        const newPoints = line.current.points().concat([
+            pos.x / layer.current.getStage().scaleX(),
+            pos.y / layer.current.getStage().scaleY(),
+        ]);
+
+        line.current.points(newPoints);
+        layer.current.batchDraw();
+    }
+
+    function onMouseUp(e) {
+        if (!isGm || !painting) {
+            return;
+        }
+
+        painting = false;
+        line.current.globalCompositeOperation(null);
+        fow.current && fow.current.globalCompositeOperation(null);
+        save(group.current.toDataURL());
+        fow.current && fow.current.globalCompositeOperation("destination-out");
+        line.current.globalCompositeOperation("destination-out");
+    }
+
     return (
         <Layer ref={layer}
                onMouseDown={onMouseDown}
+               onTouchStart={onMouseDown}
                onMouseUp={onMouseUp}
+               onTouchEnd={onMouseUp}
                onMouseMove={onMouseMove}
-               opacity={isGm ? 0.8 : 1}>
-            <Group ref={group}/>
+               onTouchMove={onMouseMove}
+        >
+            <Group
+                ref={group}
+                width={base.width}
+                height={base.height}
+            >
+                <Rect
+                    width={base.width}
+                    height={base.height}
+                >
+
+                </Rect>
+                <Line
+                    ref={line}
+                    stroke={fogColor}
+                    strokeWidth={60}
+                    opacity={1}
+                    lineJoin="round"
+                    lineCap="round"
+                    globalCompositeOperation="destination-out"
+                />
+            </Group>
         </Layer>
     );
 }

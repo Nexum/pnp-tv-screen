@@ -3,7 +3,7 @@ import Konva from "konva";
 import {useEffect, useRef, useState} from "react";
 import Button from "./Button";
 
-export default function Creature({name, width, scale, visible, rotation, _id, height, pos, health, currentHealth}) {
+export default function Creature({name, width, scale, visible, rotation, _id, height, pos, health, currentHealth, isGm}) {
     const group = useRef();
     const transformer = useRef();
     const [label, setLabel] = useState();
@@ -72,6 +72,10 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
     }
 
     function toggleSelected() {
+        if (!isGm) {
+            return;
+        }
+
         setIsSelected(!isSelected);
     }
 
@@ -84,7 +88,7 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
                 scaleX={scale.x}
                 scaleY={scale.y}
                 rotation={rotation}
-                draggable
+                draggable={isGm}
                 onTransformEnd={onTransformEnd}
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
@@ -101,7 +105,7 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
                 <Text text={label}
                       padding={10}
                       fontStyle={"bold"}/>
-                <Text
+                {isGm && <Text
                     text="👁"
                     fontSize={36}
                     x={160}
@@ -109,7 +113,7 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
                     onClick={saveCreature.bind(null, {
                         visible: !visible,
                     })}
-                />
+                />}
 
                 {isSelected && <Button
                     color={"#650e0e"}

@@ -30,7 +30,7 @@ export default function CreatureLayer({map, isGm}) {
 
     return (
         <Layer ref={layer}>
-            {creatures.map((v, i) => <Creature key={i} {...v}/>)}
+            {creatures.map((v, i) => <Creature key={i} isGm={isGm} {...v}/>)}
         </Layer>
     );
 }

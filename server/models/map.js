@@ -7,6 +7,7 @@ const schema = new Schema({
         type: Boolean,
         default: false,
     },
+    background: String,
     fow: {
         type: String,
     },

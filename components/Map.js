@@ -4,6 +4,7 @@ import Konva from "konva";
 import MapLayer from "./Map/MapLayer";
 import CreatureLayer from "./Map/CreatureLayer";
 import FowLayer from "./Map/FowLayer";
+import BackgroundLayer from "./Map/BackgroundLayer";
 
 export default function Map({map, isGm}) {
     const stage = useRef();
@@ -22,6 +23,7 @@ export default function Map({map, isGm}) {
 
     return (
         <Stage className="screen" ref={stage} scale={scale} width={base.width} height={base.height}>
+            <BackgroundLayer map={map} isGm={isGm} base={base}></BackgroundLayer>
             <MapLayer map={map} isGm={isGm} base={base}></MapLayer>
             <FowLayer map={map} isGm={isGm} base={base}></FowLayer>
             <CreatureLayer map={map} isGm={isGm} base={base}></CreatureLayer>
