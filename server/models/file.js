@@ -2,10 +2,11 @@ const {Schema, Types, model} = require("mongoose");
 
 
 const schema = new Schema({
-
-    _id: String,
+    map: {
+        type: Types.ObjectId,
+        ref: "map",
+    },
     data: Buffer,
-
 });
 
 model("file", schema);

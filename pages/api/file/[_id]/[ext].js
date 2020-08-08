@@ -7,7 +7,7 @@ const FileType = require('file-type');
 export default async (req, res) => {
     const {_id, ext} = req.query;
     const file = await fileModel.findOne({
-        _id: req.query._id,
+        map: req.query._id,
     });
 
     if (!file) {

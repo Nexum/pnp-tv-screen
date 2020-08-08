@@ -10,6 +10,28 @@ const schema = new Schema({
         type: String,
         ref: "map",
     },
+    width: {
+        type: Number,
+        default: 200,
+    },
+    height: {
+        type: Number,
+        default: 32,
+    },
+    scale: {
+        x: {
+            type: Number,
+            default: 1,
+        },
+        y: {
+            type: Number,
+            default: 1,
+        },
+    },
+    rotation: {
+        type: Number,
+        default: 0,
+    },
     pos: {
         x: {
             type: Number,

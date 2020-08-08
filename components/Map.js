@@ -1,27 +1,56 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import useSocket from "../hooks/useSocket";
-import FogOfWar from "./FogOfWar";
+import {Stage, Layer, Rect, Image} from "react-konva";
+import Konva from "konva";
+import MapLayer from "./Map/MapLayer";
+import CreatureLayer from "./Map/CreatureLayer";
+import FowLayer from "./Map/FowLayer";
+import MarkerLayer from "./Map/MarkerLayer";
+import BackgroundLayer from "./Map/BackgroundLayer";
 
-export default function Map({className, mapName, marker, fow, isGm, resetFow, saveFogOfWar}) {
-    const [imageLoadTimestamp, setImageLoad] = useState();
-    const [imageWidth, setImageWidth] = useState();
-    const [imageHeight, setImageHeight] = useState();
-    const containerRef = useRef();
-
-    useSocket(`file.${mapName}.changed`, () => {
-        setImageLoad(Date.now());
+export default function Map({map, isGm, gmOptions}) {
+    const stage = useRef();
+    const base = {
+        width: 1920,
+        height: 1080,
+    };
+    const [screenSize, setScreenSize] = useState({
+        width: window.document.body.clientWidth,
+        height: window.document.body.clientHeight,
     });
+    const [scale, setScale] = useState({
+        x: screenSize.height / base.height,
+        y: screenSize.height / base.height,
+    });
+    const layers = {
+        background: <BackgroundLayer key="background" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></BackgroundLayer>,
+        map: <MapLayer key="map" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MapLayer>,
+        fow: <FowLayer key="fow" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></FowLayer>,
+        marker: <MarkerLayer key="marker" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></MarkerLayer>,
+        creature: <CreatureLayer key="creature" map={map} isGm={isGm} base={base} gmOptions={gmOptions}></CreatureLayer>,
+    };
 
-    function handleMapLoad(width, height) {
-        containerRef.current.style.width = "auto";
-        setImageWidth(width);
-        setImageHeight(height);
+    let layerOrder = [
+        "background",
+        "map",
+        "marker",
+        "fow",
+        "creature",
+    ];
+    if (gmOptions.activeLayer === "marker") {
+        layerOrder = [
+            "background",
+            "map",
+            "fow",
+            "marker",
+            "creature",
+        ];
     }
 
     return (
-        <div className={(className || "") + " map"} ref={containerRef}>
-            <FogOfWar data={fow} mapSrc={`/api/file/${mapName}/png?loadTimestamp=${imageLoadTimestamp}`} marker={marker} onLoad={handleMapLoad}
-                      resetFow={resetFow} width={imageWidth} height={imageHeight} isGm={isGm} onSave={saveFogOfWar}/>
-        </div>
+        <Stage className="screen" ref={stage} scale={scale} width={base.width} height={base.height}>
+            {layerOrder.map((v, i) => {
+                return layers[v];
+            })}
+        </Stage>
     );
 }

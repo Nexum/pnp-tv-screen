@@ -17,22 +17,32 @@ export default async (req, res) => {
 
     form.uploadDir = os.tmpdir();
     form.keepExtensions = true;
-    form.parse(req, async (err, fields, files) => {
-        await fileModel.update({
-            _id: _id,
-        }, {
-            $set: {
-                _id: _id,
-                data: fs.readFileSync(files.file.path),
-            },
-        }, {
-            upsert: true,
-        });
 
-        req.io.emit("file." + _id + ".changed");
+    await new Promise((resolve, reject) => {
+        form.parse(req, async (err, fields, files) => {
+            try {
+                await fileModel.updateOne({
+                    map: _id,
+                }, {
+                    $set: {
+                        map: _id,
+                        data: fs.readFileSync(files.file.path),
+                    },
+                }, {
+                    upsert: true,
+                });
 
-        res.json({
-            success: true,
+                req.io.emit("file." + _id + ".changed");
+                req.io.emit("map.changed");
+
+                res.json({
+                    success: true,
+                });
+
+                return resolve();
+            } catch (e) {
+                return reject(e);
+            }
         });
     });
 };

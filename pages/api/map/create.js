@@ -9,19 +9,23 @@ export const config = {
 };
 
 export default async (req, res) => {
-    let {_id} = req.query;
     const data = JSON.parse(req.body);
+    const doc = new mapModel(data);
 
-    await mapModel.update({
-        _id: _id,
+    doc.set("active", true);
+    await doc.save();
+
+    await mapModel.updateMany({
+        _id: {$ne: doc._id},
     }, {
         $set: {
-            fow: data.fow,
+            active: false,
         },
     });
 
-    req.io.emit("map." + _id + ".changed");
+    req.io.emit("map." + doc._id + ".changed");
+    req.io.emit("map.created");
     req.io.emit("map.changed");
 
-    res.json(await mapModel.findOne({_id: _id}));
+    res.json(await mapModel.findOne({_id: doc._id}));
 };

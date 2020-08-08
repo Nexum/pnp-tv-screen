@@ -1,49 +1,25 @@
-import CreatureLayer from "./CreatureLayer";
-import Map from "./Map";
-import SideBar from "./SideBar";
-import {useEffect, useRef, useState} from "react";
-import DndContainer from "./DndContainer";
-import ControlPanel from "./ControlPanel";
+import {useEffect, useState} from "react";
 import useSocket from "../hooks/useSocket";
-
+import Map from "./Map";
+import ToolBar from "./ToolBar";
+import gm from "../pages/gm";
 
 export default function Screen({isGm}) {
-    const layer = useRef();
-    const [factor, setFactor] = useState(1);
-    const [mapName, setMapName] = useState(null);
-    const [mapFow, setMapFow] = useState(null);
-    const [mapMarker, setMapMarker] = useState(null);
-    const [layerWidth, setLayerWidth] = useState(null);
-
-    useEffect(() => {
-        if (layer.current) {
-            setLayerWidth(layer.current.clientWidth);
-        }
-    }, [mapName]);
-
-    useEffect(() => {
-        if (!layerWidth) {
-            return;
-        }
-
-        let newfactor = layerWidth / 1280;
-        setFactor(newfactor);
-
-    }, [layerWidth]);
-
-    function resetFow() {
-        saveFogOfWar(null);
-    }
-
-    async function saveFogOfWar(data, marker) {
-        await fetch(`/api/map/${mapName}/fow`, {
-            method: "POST",
-            body: JSON.stringify({
-                data,
-                marker,
-            }),
-        });
-    }
+    const [map, setMap] = useState();
+    const [gmOptions, setGmOptions] = useState({
+        fowBrushSize: 120,
+        fowMode: "remove",
+        paintBrushSize: 40,
+        paintColor: "#FF0000",
+        paintColorRBGA: {
+            r: 255,
+            g: 0,
+            b: 0,
+            a: 0.8,
+        },
+        paintColorAlpha: 1,
+        paintMode: "paint",
+    });
 
     async function getActiveMap() {
         const data = await fetch("/api/map/active", {
@@ -53,13 +29,9 @@ export default function Screen({isGm}) {
         try {
             const map = await data.json();
 
-            if (map) {
-                setMapName(map._id);
-                setMapFow(map.fow);
-                setMapMarker(map.marker);
-            }
+            setMap(map || null);
         } catch (e) {
-
+            setMap(null);
         }
     }
 
@@ -71,23 +43,21 @@ export default function Screen({isGm}) {
         getActiveMap();
     });
 
-    useSocket(`map.${mapName}.changed`, () => {
+    useSocket(`map.changed`, () => {
         getActiveMap();
     });
 
-    if (!mapName) {
-        return null;
+    function changeGmOptions(update) {
+        setGmOptions({
+            ...gmOptions,
+            ...update,
+        });
     }
 
     return (
         <>
-            <DndContainer factor={factor}>
-                <CreatureLayer isGm={isGm} factor={factor} mapName={mapName}/>
-                <div className="screen d-flex justify-content-center" ref={layer}>
-                    <Map isGm={isGm} factor={factor} mapName={mapName} fow={mapFow} marker={mapMarker} resetFow={resetFow} saveFogOfWar={saveFogOfWar}/>
-                </div>
-            </DndContainer>
-            {isGm && <ControlPanel mapName={mapName} resetFow={resetFow}/>}
+            {map && <Map isGm={isGm} map={map} gmOptions={gmOptions}/>}
+            {isGm && <ToolBar map={map} setGmOptions={changeGmOptions} gmOptions={gmOptions}/>}
         </>
     );
 }

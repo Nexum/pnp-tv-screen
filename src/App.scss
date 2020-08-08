@@ -1,54 +1,23 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
-@import 'Map';
-@import "Creature";
+@import "ToolBar";
 
-html, body {
-    max-width: 100vw;
-    max-height: 100vh;
-}
-
-.sidebar {
-    min-width: 100px;
-}
-
-.screen {
-    position: relative;
+body, .screen {
     height: 100vh;
     width: 100vw;
     max-height: 100vh;
     max-width: 100vw;
-
-    background: url("/img/wood.jpg");
-
-    .dnd-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
+    overflow: hidden;
 }
 
 .control-panel {
     position: fixed;
-
-    .edit-button {
-        position: fixed;
-        right: 10px;
-        top: 10px;
-        width: 50px;
-        height: 50px;
-    }
+    top: 10px;
+    right: 10px;
 }
 
 .control-panel-form {
     position: fixed;
-    z-index: 150;
+    top: 50px;
+    right: 100px;
     background-color: white;
-
-    .close-btn {
-        width: 31px;
-        position: absolute;
-        z-index: 1000;
-        top: 10px;
-        right: 10px;
-    }
 }
