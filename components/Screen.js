@@ -3,6 +3,7 @@ import useSocket from "../hooks/useSocket";
 import Map from "./Map";
 import ToolBar from "./ToolBar";
 import gm from "../pages/gm";
+import TvMap from "./Tv/TvMap";
 
 export default function Screen({isGm}) {
     const [map, setMap] = useState();
@@ -54,9 +55,25 @@ export default function Screen({isGm}) {
         });
     }
 
+    async function saveSnapshot(image) {
+        const blobBin = atob(image.split(',')[1]);
+        const array = [];
+        for (let i = 0; i < blobBin.length; i++) {
+            array.push(blobBin.charCodeAt(i));
+        }
+        const file = new Blob([new Uint8Array(array)], {type: 'image/png'});
+        const data = new FormData();
+        data.append("file", file);
+        fetch(`/api/snapshot/${map._id}/upload`, {
+            method: "POST",
+            body: data,
+        });
+    }
+
     return (
         <>
             {map && <Map isGm={isGm} map={map} gmOptions={gmOptions}/>}
+            {map && <TvMap map={map} saveSnapshot={saveSnapshot}/>}
             {isGm && <ToolBar map={map} setGmOptions={changeGmOptions} gmOptions={gmOptions}/>}
         </>
     );

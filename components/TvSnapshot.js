@@ -4,6 +4,7 @@ import TvMap from "./Tv/TvMap";
 
 export default function Screen({saveSnapshot}) {
     const [map, setMap] = useState();
+    const [loadTimestamp, setLoadTimestamp] = useState();
 
     async function getActiveMap() {
         const data = await fetch("/api/map/active", {
@@ -17,23 +18,23 @@ export default function Screen({saveSnapshot}) {
         } catch (e) {
             setMap(null);
         }
+
+        setLoadTimestamp(Date.now());
     }
 
     useEffect(() => {
         getActiveMap();
     }, []);
 
-    useSocket("map.activated", () => {
+    useSocket(`snapshot.changed`, () => {
         getActiveMap();
     });
 
-    useSocket(`map.changed`, () => {
-        getActiveMap();
-    });
+    if (!map) {
+        return null;
+    }
 
     return (
-        <>
-            {map && <TvMap map={map} saveSnapshot={saveSnapshot}/>}
-        </>
+        <img className={"snapshot-image"} src={`/api/snapshot/${map._id}/png?load=${loadTimestamp || 0}`}/>
     );
 }

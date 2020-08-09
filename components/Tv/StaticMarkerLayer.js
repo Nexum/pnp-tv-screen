@@ -10,6 +10,8 @@ export default function FowLayer({map, base}) {
 
     useEffect(() => {
         if (group.current) {
+            group.current.destroyChildren();
+
             if (!map.marker) {
                 return;
             }
@@ -25,6 +27,7 @@ export default function FowLayer({map, base}) {
 
                 group.current.add(newImage);
                 newImage.moveToTop();
+                group.current.getLayer().batchDraw();
             };
         }
     }, [map]);

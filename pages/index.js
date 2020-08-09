@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Tv from "../components/Tv";
+import TvSnapshot from "../components/TvSnapshot";
 
 export default function IndexPage() {
     return (
@@ -10,7 +10,7 @@ export default function IndexPage() {
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
             </Head>
 
-            <Tv/>
+            <TvSnapshot/>
         </>
     );
 }

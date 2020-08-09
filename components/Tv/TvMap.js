@@ -8,23 +8,42 @@ import StaticMarkerLayer from "./StaticMarkerLayer";
 import StaticBackgroundLayer from "./StaticBackgroundLayer";
 import useSocket from "../../hooks/useSocket";
 
-export default function TvMap({map, isGm}) {
+export default function TvMap({map, saveSnapshot}) {
     const stage = useRef();
     const base = {
         width: 1920,
         height: 1080,
     };
-    const [screenSize, setScreenSize] = useState({
-        width: window.document.body.clientWidth,
-        height: window.document.body.clientHeight,
+
+    function makeSnapShot() {
+        if (!saveSnapshot) {
+            return;
+        }
+        stage.current.batchDraw();
+        const image = stage.current.toDataURL({
+            quality: 1,
+            x: 0,
+            y: 0,
+            width: base.width,
+            height: base.height,
+        });
+
+        saveSnapshot(image);
+    }
+
+    useSocket("map.changed", () => {
+        setTimeout(() => {
+            makeSnapShot();
+        }, 500);
     });
-    const [scale, setScale] = useState({
-        x: screenSize.height / base.height,
-        y: screenSize.height / base.height,
+    useSocket("creatures.changed", () => {
+        setTimeout(() => {
+            makeSnapShot();
+        }, 500);
     });
 
     return (
-        <Stage className="screen" ref={stage} scale={scale} width={base.width} height={base.height}>
+        <Stage className="screen" ref={stage}  width={base.width} height={base.height}>
             <Layer listening={false}>
                 <StaticBackgroundLayer key="background" map={map} base={base}></StaticBackgroundLayer>
                 <StaticMapLayer key="map" map={map} base={base}></StaticMapLayer>

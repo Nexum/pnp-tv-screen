@@ -35,7 +35,7 @@ export default async (req, res) => {
                 });
 
                 req.io.emit("file." + _id + ".changed");
-                req.io.emit("map.snapshot");
+                req.io.emit("snapshot.changed");
 
                 res.json({
                     success: true,
