@@ -6,6 +6,7 @@ import CreatureLayer from "./Map/CreatureLayer";
 import FowLayer from "./Map/FowLayer";
 import MarkerLayer from "./Map/MarkerLayer";
 import BackgroundLayer from "./Map/BackgroundLayer";
+import useSocket from "../hooks/useSocket";
 
 export default function Map({map, isGm, gmOptions}) {
     const stage = useRef();
@@ -44,6 +45,28 @@ export default function Map({map, isGm, gmOptions}) {
             "marker",
             "creature",
         ];
+    }
+
+    async function saveSnapshot() {
+        const image = stage.current.toDataURL({
+            quality: 1,
+            x: 0,
+            y: 0,
+            width: base.width,
+            height: base.height,
+        });
+        const blobBin = atob(image.split(',')[1]);
+        const array = [];
+        for (let i = 0; i < blobBin.length; i++) {
+            array.push(blobBin.charCodeAt(i));
+        }
+        const file = new Blob([new Uint8Array(array)], {type: 'image/png'});
+        const data = new FormData();
+        data.append("file", file);
+        fetch(`/api/snapshot/${map._id}/upload`, {
+            method: "POST",
+            body: data,
+        });
     }
 
     return (

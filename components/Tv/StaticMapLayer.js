@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {Stage, Layer, Rect, Image} from "react-konva";
+import {Group} from "react-konva";
 import Konva from "konva";
 
 
-export default function MapLayer({map, base}) {
+export default function StaticMapLayer({map, base}) {
     const layer = useRef();
 
     useEffect(() => {
@@ -25,20 +25,19 @@ export default function MapLayer({map, base}) {
             image.scaleY(1);
 
             // move image to center
-            const centerX = (layer.current.width() / 2) - (image.width() / 2);
+            const centerX = (layer.current.getLayer().width() / 2) - (image.width() / 2);
             image.position({
                 x: centerX,
                 y: 0,
             });
 
             image.cache();
-            // draw image
             layer.current.add(image);
-            layer.current.draw();
+            layer.current.getLayer().batchDraw();
         });
     }, [map]);
 
     return (
-        <Layer ref={layer} listening={false}></Layer>
+        <Group ref={layer} listening={false}></Group>
     );
 }

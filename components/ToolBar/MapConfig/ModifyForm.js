@@ -56,7 +56,6 @@ export default function ModifyForm({map}) {
     }
 
     async function handleSubmit() {
-        console.log("ModifyForm.js:58 / handleSubmit", values, map);
         await fetch(`/api/map/${values._id}/save`, {
             method: "POST",
             body: JSON.stringify({

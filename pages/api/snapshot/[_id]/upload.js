@@ -23,19 +23,19 @@ export default async (req, res) => {
             try {
                 await fileModel.updateOne({
                     map: _id,
-                    type: "map",
+                    type: "snapshot",
                 }, {
                     $set: {
                         map: _id,
                         data: fs.readFileSync(files.file.path),
-                        type: "map",
+                        type: "snapshot",
                     },
                 }, {
                     upsert: true,
                 });
 
                 req.io.emit("file." + _id + ".changed");
-                req.io.emit("map.changed");
+                req.io.emit("map.snapshot");
 
                 res.json({
                     success: true,

@@ -7,6 +7,13 @@ const schema = new Schema({
         ref: "map",
     },
     data: Buffer,
+    type: {
+        type: String,
+        enum: [
+            "map",
+            "snapshot",
+        ],
+    },
 });
 
 model("file", schema);

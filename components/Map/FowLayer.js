@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {Group, Layer, Line, Rect} from "react-konva";
 import Konva from "konva";
-import gm from "../../pages/gm";
 
 let painting;
 

@@ -8,7 +8,7 @@ export default async (req, res) => {
     const {_id, ext} = req.query;
     const file = await fileModel.findOne({
         map: req.query._id,
-        type: "map",
+        type: "snapshot",
     });
 
     if (!file) {
@@ -18,7 +18,7 @@ export default async (req, res) => {
     const fileType = await FileType.fromBuffer(file.data);
 
     if (fileType.ext !== ext) {
-        return res.redirect(`/api/file/${_id}/${fileType.ext}`);
+        return res.redirect(`/api/snapshot/${_id}/${fileType.ext}`);
     }
 
     res.setHeader("Content-Type", fileType.mime);

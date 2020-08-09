@@ -12,8 +12,7 @@ const backgrounds = {
     wood: "wood.jpg",
 };
 
-export default function BackgroundLayer({map, isGm, base}) {
-    const layer = useRef();
+export default function StaticBackgroundLayer({map, isGm, base}) {
     const rect = useRef();
 
     useEffect(() => {
@@ -23,17 +22,15 @@ export default function BackgroundLayer({map, isGm, base}) {
         img.src = `/img/backgrounds/${backgrounds[background]}`;
         img.onload = function () {
             rect.current.fillPatternImage(img);
-            layer.current.batchDraw();
+            rect.current.getLayer().batchDraw();
         };
 
     }, [map]);
 
     return (
-        <Layer ref={layer} listening={false}>
-            <Rect ref={rect}
-                  width={base.width}
-                  height={base.height}
-            ></Rect>
-        </Layer>
+        <Rect ref={rect}
+              width={base.width}
+              height={base.height}
+        ></Rect>
     );
 }
