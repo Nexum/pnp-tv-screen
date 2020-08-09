@@ -14,8 +14,8 @@ export default function StaticFowLayer({map, isGm, base, gmOptions}) {
                 fow.current.destroy();
             }
 
-            if (!map.fow) {
-                layer.current.batchDraw();
+            if (!map.fow && layer.current) {
+                layer.current.getLayer().batchDraw();
                 return;
             }
 
