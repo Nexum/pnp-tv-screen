@@ -15,7 +15,7 @@ export default function Creature({name, width, scale, visible, rotation, _id, he
     }, [health, currentHealth]);
 
     useEffect(() => {
-        setLabel(`${name}%`);
+        setLabel(`${name}`);
     }, [name, percentage]);
 
     useEffect(() => {
